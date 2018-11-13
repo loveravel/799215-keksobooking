@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Sergey Odintsov](https://up.htmlacademy.ru/javascript/16/user/799215).
-* Наставник: `Неизвестно`.
+* Наставник: [Гений Трасковский](https://htmlacademy.ru/profile/id454037).
 
 ---
 
