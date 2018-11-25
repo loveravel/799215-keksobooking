@@ -56,6 +56,7 @@ function checkForIdentical(arr, val) {
 function Author(avatar) {
   this.avatar = avatar;
 }
+
 function Offer(title, address, price, type, rooms, guests, checkin, checkout, features, description, photos) {
   this.title = title;
   this.address = address;
@@ -69,6 +70,7 @@ function Offer(title, address, price, type, rooms, guests, checkin, checkout, fe
   this.description = description;
   this.photos = photos;
 }
+
 function Location(x, y) {
   this.x = x;
   this.y = y;
@@ -134,3 +136,5 @@ function getPhotosArray() {
   }
   return photos;
 }
+
+document.querySelector('.map').classList.remove('map--faded');
