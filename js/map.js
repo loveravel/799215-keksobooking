@@ -1,6 +1,6 @@
 'use strict';
 
-var OptionsNotice = {
+var OptionsCard = {
   TITLE_LIST: [
     'Большая уютная квартира',
     'Маленькая неуютная квартира',
@@ -76,26 +76,26 @@ function Location(x, y) {
   this.y = y;
 }
 
-var getNoticeList = function () {
-  var noticeList = [];
+var getCardList = function () {
+  var cardList = [];
   for (var i = 0; i < 8; i++) {
-    noticeList.push(new Author(getAvatarPath(i),
+    cardList.push(/*new Author(getAvatarPath(i),*/
         new Offer(
-            OptionsNotice.TITLE_LIST[i],
+            OptionsCard.TITLE_LIST[i],
             getAddress(),
             getRandom(1000, 1000000),
-            OptionsNotice.TYPE_LIST[getRandom(0, OptionsNotice.TYPE_LIST.length - 1)],
+            OptionsCard.TYPE_LIST[getRandom(0, OptionsCard.TYPE_LIST.length - 1)],
             getRandom(1, 5),
-            OptionsNotice.CHECKIN_LIST[getRandom(0, OptionsNotice.CHECKIN_LIST.length - 1)],
-            OptionsNotice.CHECKOUT_LIST[getRandom(0, OptionsNotice.CHECKOUT_LIST.length - 1)],
-            getFeatures(),
-            OptionsNotice.DESCRIPTION_LIST,
-            getPhotosArray()),
-        new Location(
+            OptionsCard.CHECKIN_LIST[getRandom(0, OptionsCard.CHECKIN_LIST.length - 1)],
+            OptionsCard.CHECKOUT_LIST[getRandom(0, OptionsCard.CHECKOUT_LIST.length - 1)],
+            getFeatures(OptionsCard),
+            OptionsCard.DESCRIPTION_LIST,
+            getPhotosArray()));
+        /*new Location(
             getLocation().x,
-            getLocation().y)));
+            getLocation().y)));*/
   }
-  return noticeList;
+  return cardList;
 };
 
 function getAvatarPath(index) {
@@ -138,3 +138,28 @@ function getPhotosArray() {
 }
 
 document.querySelector('.map').classList.remove('map--faded');
+
+var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
+var mapElement = document.querySelector('.map');
+var filtersContainer = document.querySelector('.map__filters-container');
+
+function renderCard(card) {
+  var cardElement = cardTemplate.cloneNode(true);
+  //cardElement.querySelector('.popup_avatar').src = card.avatar;
+  cardElement.querySelector('.popup__title').textContent = card.title;
+  cardElement.querySelector('.popup__text--address').textContent = card.address;
+  cardElement.querySelector('.popup__text--price').textContent = card.price + '&#x20db;';
+  cardElement.querySelector('.popup__type').textContent = card.type;
+  cardElement.querySelector('.popup__text--capacity').textContent = card.rooms + ' комнат(ы) для '
+    + card.guests + ' гостей';
+  cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + card.checkin
+    + ', выезд до' + card.checkout;
+  cardElement.querySelector('.popup__features');
+  cardElement.querySelector('.popup__description').textContent = card.description;
+  //cardElement.querySelector('.popup__photos').src = card.photos[0];
+  return cardElement;
+}
+
+var fragment = document.createDocumentFragment();
+fragment.appendChild(renderCard(getCardList()[0]));
+mapElement.appendChild(fragment);
