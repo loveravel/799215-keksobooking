@@ -1,5 +1,8 @@
 'use strict';
 
+var PIN_SIZE_X = 50;
+var PIN_SIZE_Y = 70;
+
 var OptionsCard = {
   TITLE_LIST: [
     'Большая уютная квартира',
@@ -38,56 +41,6 @@ var OptionsCard = {
   DESCRIPTION_LIST: ''
 };
 
-function getRandom(min, max) {
-  var rand = min - 0.5 + Math.random() * (max - min + 1);
-  rand = Math.round(rand);
-  return rand;
-}
-
-function checkForIdentical(arr, val) {
-  for (var i = 0; i < arr.length; i++) {
-    if (arr[i] === val) {
-      return true;
-    }
-  }
-  return false;
-}
-
-function getAvatarPath(index) {
-  return 'img/avatars/user0' + index + '.png';
-}
-
-function getLocation() {
-  return {
-    x: getRandom(0, 1200) - 25,
-    y: getRandom(130, 630) - 70
-  };
-}
-
-function getAddress() {
-  return getLocation().x + ', ' + getLocation().y;
-}
-
-function getFeatures(optionsFeaturesList) {
-  var featuresList = [];
-  for (var i = 0; i < optionsFeaturesList.length; i++) {
-    var featureIndex = getRandom(0, optionsFeaturesList.length);
-    if (!checkForIdentical(featuresList, optionsFeaturesList[featureIndex])) {
-      featuresList += optionsFeaturesList[featureIndex];
-    }
-  }
-  return featuresList;
-}
-
-function getPhotosArray() {
-  var photos = [];
-  for (var i = 0; i < 3; i++) {
-    var j = getRandom(1, 3);
-    photos.push('http://o0.github.io/assets/images/tokyo/hotel' + j + '.jpg');
-  }
-  return photos;
-}
-
 function Author(avatar) {
   this.avatar = avatar;
 }
@@ -111,10 +64,68 @@ function Location(x, y) {
   this.y = y;
 }
 
+function getRandomInteger(min, max) {
+  var rand = min - 0.5 + Math.random() * (max - min + 1);
+  rand = Math.round(rand);
+  return rand;
+}
+
+function getRandomArray(arr, n) {
+  var result = new Array(n);
+  var len = arr.length;
+  var taken = new Array(len);
+  if (n > len) {
+    throw new RangeError('getRandomArray: more elements taken than available');
+  }
+  while (n--) {
+    var x = Math.floor(Math.random() * len);
+    result[n] = arr[x in taken ? taken[x] : x];
+    taken[x] = --len in taken ? taken[len] : len;
+  }
+  return result.sort();
+}
+
+function getArrayWithNumbers(startNumber, endNumber) {
+  var arr = [];
+  for (startNumber; startNumber <= endNumber; startNumber++) {
+    arr.push(startNumber);
+  }
+  return arr;
+}
+
+function getPathToAvatar(index) {
+  return 'img/avatars/user0' + index + '.png';
+}
+
+function getLocation() {
+  return {
+    x: getRandomInteger(0, 1200) - PIN_SIZE_X / 2,
+    y: getRandomInteger(130, 630) - PIN_SIZE_Y
+  };
+}
+
+function getAddress() {
+  return getLocation().x + ', ' + getLocation().y;
+}
+
+function getFeatures(arr) {
+  return getRandomArray(arr, getRandomInteger(1, 5));
+}
+
+function getPhotosArray() {
+  var photos = [];
+  for (var i = 0; i < 3; i++) {
+    photos.push('http://o0.github.io/assets/images/tokyo/hotel' + (i + 1) + '.jpg');
+  }
+  photos = getRandomArray(photos, getRandomInteger(1, 3));
+  return photos;
+}
+
 var getAuthorOptionList = function () {
   var authorOptionList = [];
-  for (var i = 0; i < 8; i++) {
-    authorOptionList.push(new Author(getAvatarPath(getRandom(1, 8))));
+  var arr = getRandomArray(getArrayWithNumbers(1, 8), 8);
+  for (var i = 0; i < arr.length; i++) {
+    authorOptionList.push(new Author(getPathToAvatar(arr[i])));
   }
   return authorOptionList;
 };
@@ -123,15 +134,15 @@ var getOfferOptionList = function () {
   var offerOptionList = [];
   for (var i = 0; i < 8; i++) {
     offerOptionList.push(new Offer(
-        OptionsCard.TITLE_LIST[getRandom(0, 7)],
+        OptionsCard.TITLE_LIST[getRandomInteger(0, 7)],
         getAddress(),
-        getRandom(1000, 1000000),
-        OptionsCard.TYPE_LIST[getRandom(0, OptionsCard.TYPE_LIST.length - 1)],
-        getRandom(1, 5),
-        getRandom(1, 10),
-        OptionsCard.CHECKIN_LIST[getRandom(0, OptionsCard.CHECKIN_LIST.length - 1)],
-        OptionsCard.CHECKOUT_LIST[getRandom(0, OptionsCard.CHECKOUT_LIST.length - 1)],
-        getFeatures(OptionsCard),
+        getRandomInteger(1000, 1000000),
+        OptionsCard.TYPE_LIST[getRandomInteger(0, OptionsCard.TYPE_LIST.length - 1)],
+        getRandomInteger(1, 5),
+        getRandomInteger(1, 10),
+        OptionsCard.CHECKIN_LIST[getRandomInteger(0, OptionsCard.CHECKIN_LIST.length - 1)],
+        OptionsCard.CHECKOUT_LIST[getRandomInteger(0, OptionsCard.CHECKOUT_LIST.length - 1)],
+        getFeatures(OptionsCard.FEATURES_LIST),
         OptionsCard.DESCRIPTION_LIST,
         getPhotosArray()));
   }
@@ -165,9 +176,23 @@ function renderCard(author, offer) {
     + offer.guests + ' гостей';
   cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + offer.checkin
     + ', выезд до ' + offer.checkout;
-  cardElement.querySelector('.popup__features');
+  cardElement.querySelector('.popup__features').innerHTML = '';
+  for (var featureIndex = 0; featureIndex < offer.features.length; featureIndex++) {
+    var featureElement = document.createElement('li');
+    featureElement.className = 'popup__feature popup__feature--' + offer.features[featureIndex];
+    cardElement.querySelector('.popup__features').appendChild(featureElement);
+  }
   cardElement.querySelector('.popup__description').textContent = offer.description;
-  cardElement.querySelector('.popup__photos').src = offer.photos[0];
+  cardElement.querySelector('.popup__photos').innerHTML = '';
+  for (var photoIndex = 0; photoIndex < offer.photos.length; photoIndex++) {
+    var photoElement = document.createElement('img');
+    photoElement.className = 'popup__photo';
+    photoElement.src = offer.photos[photoIndex];
+    photoElement.width = 45;
+    photoElement.height = 40;
+    photoElement.alt = 'Фотография жилья';
+    cardElement.querySelector('.popup__photos').appendChild(photoElement);
+  }
   return cardElement;
 }
 
@@ -184,8 +209,8 @@ function renderMapPin(author, offer, location) {
 
 var fragment = document.createDocumentFragment();
 fragment.appendChild(
-    renderCard(getAuthorOptionList()[0],
-        getOfferOptionList()[0]));
+    renderCard(getAuthorOptionList()[getRandomInteger(0, 7)],
+        getOfferOptionList()[getRandomInteger(0, 7)]));
 for (var i = 0; i < 8; i++) {
   fragment.appendChild(
       renderMapPin(
