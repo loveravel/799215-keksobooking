@@ -99,13 +99,13 @@ function getPathToAvatar(index) {
 
 function getLocation() {
   return {
-    x: getRandomInteger(0, 1200) - PIN_SIZE_X / 2,
+    x: getRandomInteger(PIN_SIZE_X / 2, 1200 - PIN_SIZE_X / 2) - PIN_SIZE_X / 2,
     y: getRandomInteger(130, 630) - PIN_SIZE_Y
   };
 }
 
-function getAddress() {
-  return getLocation().x + ', ' + getLocation().y;
+function getAddress(location) {
+  return location.x + ', ' + location.y;
 }
 
 function getFeatures(arr) {
@@ -135,7 +135,7 @@ var getOfferOptionList = function () {
   for (var i = 0; i < 8; i++) {
     offerOptionList.push(new Offer(
         OptionsCard.TITLE_LIST[getRandomInteger(0, 7)],
-        getAddress(),
+        getAddress(locationOptionList[i]),
         getRandomInteger(1000, 1000000),
         OptionsCard.TYPE_LIST[getRandomInteger(0, OptionsCard.TYPE_LIST.length - 1)],
         getRandomInteger(1, 5),
@@ -158,8 +158,6 @@ var getLocationOptionList = function () {
   }
   return locationOptionList;
 };
-
-document.querySelector('.map').classList.remove('map--faded');
 
 var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 var map = document.querySelector('.map');
@@ -207,15 +205,51 @@ function renderMapPin(author, offer, location) {
   return mapPinElement;
 }
 
-var fragment = document.createDocumentFragment();
-fragment.appendChild(
-    renderCard(getAuthorOptionList()[getRandomInteger(0, 7)],
-        getOfferOptionList()[getRandomInteger(0, 7)]));
-for (var i = 0; i < 8; i++) {
-  fragment.appendChild(
-      renderMapPin(
-          getAuthorOptionList()[i],
-          getOfferOptionList()[i],
-          getLocationOptionList()[i]));
+var authorOptionList = getAuthorOptionList();
+var locationOptionList = getLocationOptionList();
+var offerOptionList = getOfferOptionList();
+
+function insertMapPinList() {
+  var fragment = document.createDocumentFragment();
+  for (var i = 0; i < 8; i++) {
+    fragment.appendChild(
+        renderMapPin(
+            authorOptionList[i],
+            offerOptionList[i],
+            locationOptionList[i]));
+  }
+  map.insertBefore(fragment, filtersContainer);
 }
-map.insertBefore(fragment, filtersContainer);
+
+function insertCard() {
+  var fragment = document.createDocumentFragment();
+  fragment.appendChild(renderCard(
+      authorOptionList[0],
+      offerOptionList[0]));
+  map.insertBefore(fragment, filtersContainer);
+}
+
+var mainPin = document.querySelector('.map__pin--main');
+
+var onMainPinClick = function () {
+  document.querySelector('.map').classList.remove('map--faded');
+  if (document.querySelectorAll('.map__pin').length === 1) {
+    insertMapPinList();
+    insertCard();
+  }
+};
+
+mainPin.addEventListener('click', function () {
+  onMainPinClick();
+});
+
+/* var pinList = document.querySelectorAll('.map__pin');
+var cardList = document.querySelectorAll('.map__card');
+
+var onPinClick = function () {
+
+};
+
+pinList.addEventListener('click', function () {
+  onPinClick();
+});*/
