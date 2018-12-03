@@ -273,7 +273,6 @@ var onMainPinClick = function () {
     insertMapPinList();
     insertCardList();
     enableFilterList();
-    autoCompleteAddress();
   }
   form.classList.remove('ad-form--disabled');
 
@@ -318,8 +317,42 @@ var onMainPinClick = function () {
   }
 };
 
-mainPin.addEventListener('click', function () {
-  onMainPinClick();
+mainPin.addEventListener('mousedown', function (evt) {
+  evt.preventDefault();
+
+  var startCoordinateList = {
+    x: evt.clientX,
+    y: evt.clientY
+  };
+
+  var onMouseMove = function (moveEvt) {
+    moveEvt.preventDefault();
+
+    var shift = {
+      x: startCoordinateList.x - moveEvt.clientX,
+      y: startCoordinateList.y - moveEvt.clientY
+    };
+
+    startCoordinateList = {
+      x: moveEvt.clientX,
+      y: moveEvt.clientY
+    };
+
+    mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
+    mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
+    autoCompleteAddress();
+  };
+
+  var onMouseUp = function (upEvt) {
+    upEvt.preventDefault();
+
+    onMainPinClick();
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  };
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
 });
 
 function autoCompleteAddress() {
@@ -328,3 +361,4 @@ function autoCompleteAddress() {
   inputAddress.value = (+mainPin.style.left.substr(0, mainPin.style.left.length - 2) + MAIN_PIN_WIDTH / 2)
     + ', ' + (+mainPin.style.top.substr(0, mainPin.style.top.length - 2) + MAIN_PIN_HEIGHT);
 }
+
