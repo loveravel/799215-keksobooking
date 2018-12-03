@@ -134,13 +134,13 @@ function getPathToAvatar(index) {
 
 function getLocation() {
   return {
-    x: getRandomInteger(PIN_WIDTH / 2, 1200 - PIN_WIDTH / 2) - PIN_WIDTH / 2,
-    y: getRandomInteger(130 - PIN_HEIGHT, 630 - PIN_HEIGHT) + PIN_HEIGHT
+    x: getRandomInteger(PIN_WIDTH / 2, 1200 - PIN_WIDTH / 2),
+    y: getRandomInteger(130 - PIN_HEIGHT, 630 - PIN_HEIGHT)
   };
 }
 
 function getAddress(location) {
-  return location.x + ', ' + location.y;
+  return (location.x + PIN_WIDTH / 2) + ', ' + (location.y + PIN_HEIGHT);
 }
 
 function getFeatures(arr) {
