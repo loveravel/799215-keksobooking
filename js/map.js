@@ -51,6 +51,8 @@ function getFilterList() {
   allFilterList.push(document.querySelectorAll('.ad-form__element select'));
   allFilterList.push(document.querySelectorAll('.ad-form__element input'));
   allFilterList.push(document.querySelectorAll('.ad-form__element textarea'));
+  allFilterList.push(document.querySelectorAll('.map__filters select'));
+  allFilterList.push(document.querySelectorAll('.map__filters input'));
   return allFilterList;
 }
 
