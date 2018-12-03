@@ -1,7 +1,11 @@
 'use strict';
 
-var PIN_SIZE_X = 50;
-var PIN_SIZE_Y = 70;
+var PIN_WIDTH = 50;
+var PIN_HEIGHT = 70;
+var MAIN_PIN_WIDTH = 60;
+var MAIN_PIN_HEIGHT = 80;
+var ESC_KEYCODE = 27;
+var NUMBER_OF_NOTICES = 8;
 
 var OptionsCard = {
   TITLE_LIST: [
@@ -40,6 +44,35 @@ var OptionsCard = {
   ],
   DESCRIPTION_LIST: ''
 };
+
+function getFilterList() {
+  var allFilterList = [];
+  allFilterList.push(document.querySelectorAll('.ad-form-header input'));
+  allFilterList.push(document.querySelectorAll('.ad-form__element select'));
+  allFilterList.push(document.querySelectorAll('.ad-form__element input'));
+  allFilterList.push(document.querySelectorAll('.ad-form__element textarea'));
+  return allFilterList;
+}
+
+function disableFilterList() {
+  var allFilterList = getFilterList();
+  for (var i = 0; i < allFilterList.length; i++) {
+    for (var j = 0; j < allFilterList[i].length; j++) {
+      allFilterList[i][j].disabled = true;
+    }
+  }
+}
+
+function enableFilterList() {
+  var allFilterList = getFilterList();
+  for (var i = 0; i < allFilterList.length; i++) {
+    for (var j = 0; j < allFilterList[i].length; j++) {
+      allFilterList[i][j].disabled = false;
+    }
+  }
+}
+
+disableFilterList();
 
 function Author(avatar) {
   this.avatar = avatar;
@@ -99,8 +132,8 @@ function getPathToAvatar(index) {
 
 function getLocation() {
   return {
-    x: getRandomInteger(PIN_SIZE_X / 2, 1200 - PIN_SIZE_X / 2) - PIN_SIZE_X / 2,
-    y: getRandomInteger(130, 630) - PIN_SIZE_Y
+    x: getRandomInteger(PIN_WIDTH / 2, 1200 - PIN_WIDTH / 2) - PIN_WIDTH / 2,
+    y: getRandomInteger(130 - PIN_HEIGHT, 630 - PIN_HEIGHT) + PIN_HEIGHT
   };
 }
 
@@ -123,7 +156,7 @@ function getPhotosArray() {
 
 var getAuthorOptionList = function () {
   var authorOptionList = [];
-  var arr = getRandomArray(getArrayWithNumbers(1, 8), 8);
+  var arr = getRandomArray(getArrayWithNumbers(1, NUMBER_OF_NOTICES), NUMBER_OF_NOTICES);
   for (var i = 0; i < arr.length; i++) {
     authorOptionList.push(new Author(getPathToAvatar(arr[i])));
   }
@@ -132,7 +165,7 @@ var getAuthorOptionList = function () {
 
 var getOfferOptionList = function () {
   var offerOptionList = [];
-  for (var i = 0; i < 8; i++) {
+  for (var i = 0; i < NUMBER_OF_NOTICES; i++) {
     offerOptionList.push(new Offer(
         OptionsCard.TITLE_LIST[getRandomInteger(0, 7)],
         getAddress(locationOptionList[i]),
@@ -151,7 +184,7 @@ var getOfferOptionList = function () {
 
 var getLocationOptionList = function () {
   var locationOptionList = [];
-  for (var i = 0; i < 8; i++) {
+  for (var i = 0; i < NUMBER_OF_NOTICES; i++) {
     locationOptionList.push(new Location(
         getLocation().x,
         getLocation().y));
@@ -161,10 +194,13 @@ var getLocationOptionList = function () {
 
 var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 var map = document.querySelector('.map');
+var mainPin = document.querySelector('.map__pin--main');
+var form = document.querySelector('.ad-form');
 var filtersContainer = document.querySelector('.map__filters-container');
 
 function renderCard(author, offer) {
   var cardElement = cardTemplate.cloneNode(true);
+  cardElement.classList.add('hidden');
   cardElement.querySelector('.popup__avatar').src = author.avatar;
   cardElement.querySelector('.popup__title').textContent = offer.title;
   cardElement.querySelector('.popup__text--address').textContent = offer.address;
@@ -211,7 +247,7 @@ var offerOptionList = getOfferOptionList();
 
 function insertMapPinList() {
   var fragment = document.createDocumentFragment();
-  for (var i = 0; i < 8; i++) {
+  for (var i = 0; i < NUMBER_OF_NOTICES; i++) {
     fragment.appendChild(
         renderMapPin(
             authorOptionList[i],
@@ -221,21 +257,64 @@ function insertMapPinList() {
   map.insertBefore(fragment, filtersContainer);
 }
 
-function insertCard() {
+function insertCardList() {
   var fragment = document.createDocumentFragment();
-  fragment.appendChild(renderCard(
-      authorOptionList[0],
-      offerOptionList[0]));
+  for (var i = 0; i < NUMBER_OF_NOTICES; i++) {
+    fragment.appendChild(renderCard(
+        authorOptionList[i],
+        offerOptionList[i]));
+  }
   map.insertBefore(fragment, filtersContainer);
 }
 
-var mainPin = document.querySelector('.map__pin--main');
-
 var onMainPinClick = function () {
-  document.querySelector('.map').classList.remove('map--faded');
+  map.classList.remove('map--faded');
   if (document.querySelectorAll('.map__pin').length === 1) {
     insertMapPinList();
-    insertCard();
+    insertCardList();
+    enableFilterList();
+    autoCompleteAddress();
+  }
+  form.classList.remove('ad-form--disabled');
+
+  var pinList = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+  var cardList = document.querySelectorAll('.map__card');
+  var closeCardButtonList = document.querySelectorAll('.popup__close');
+  var onPinClick = function (pin, card, closeCardButton) {
+    pin.addEventListener('click', function () {
+      checkOpenedCard();
+      pin.classList.add('map__pin--active');
+      card.classList.remove('hidden');
+      onCloseCardButtonClick(pin, card, closeCardButton);
+      onCardEscPress(pin, card);
+    });
+  };
+  var closeCard = function (pin, card) {
+    pin.classList.remove('map__pin--active');
+    card.classList.add('hidden');
+    document.removeEventListener('keydown', onCardEscPress);
+  };
+  var onCloseCardButtonClick = function (pin, card, closeCardButton) {
+    closeCardButton.addEventListener('click', function () {
+      closeCard(pin, card);
+    });
+  };
+  var onCardEscPress = function (pin, card) {
+    document.addEventListener('keydown', function (evt) {
+      if (evt.keyCode === ESC_KEYCODE) {
+        closeCard(pin, card);
+      }
+    });
+  };
+  var checkOpenedCard = function () {
+    var activePin = document.querySelector('.map__pin--active');
+    var openedCard = document.querySelector('.map__card:not(.hidden)');
+    if (activePin) {
+      closeCard(activePin, openedCard);
+    }
+  };
+  for (var i = 0; i < pinList.length; i++) {
+    onPinClick(pinList[i], cardList[i], closeCardButtonList[i]);
   }
 };
 
@@ -243,13 +322,9 @@ mainPin.addEventListener('click', function () {
   onMainPinClick();
 });
 
-/* var pinList = document.querySelectorAll('.map__pin');
-var cardList = document.querySelectorAll('.map__card');
-
-var onPinClick = function () {
-
-};
-
-pinList.addEventListener('click', function () {
-  onPinClick();
-});*/
+function autoCompleteAddress() {
+  var inputAddress = document.querySelector('#address');
+  inputAddress.disabled = true;
+  inputAddress.value = (+mainPin.style.left.substr(0, mainPin.style.left.length - 2) + MAIN_PIN_WIDTH / 2)
+    + ', ' + (+mainPin.style.top.substr(0, mainPin.style.top.length - 2) + MAIN_PIN_HEIGHT);
+}
