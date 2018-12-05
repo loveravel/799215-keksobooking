@@ -6,6 +6,7 @@ var MAIN_PIN_WIDTH = 60;
 var MAIN_PIN_HEIGHT = 80;
 var ESC_KEYCODE = 27;
 var NUMBER_OF_NOTICES = 8;
+var MAX_PRICE = 1000000;
 
 var OptionsCard = {
   TITLE_LIST: [
@@ -364,3 +365,27 @@ function autoCompleteAddress() {
     + ', ' + (+mainPin.style.top.substr(0, mainPin.style.top.length - 2) + MAIN_PIN_HEIGHT);
 }
 
+var numberOfRoomField = document.querySelector('#room_number');
+var numberOfGuestField = document.querySelector('#capacity');
+
+function validateRoomAndGuest() {
+  if (numberOfRoomField.value === '1' && numberOfGuestField.value !== '1') {
+    numberOfGuestField.setCustomValidity('В одной комнате можно разместить только одного гостя');
+  } else if (numberOfRoomField.value === '2' && (numberOfGuestField.value !== '1' || numberOfGuestField.value !== '2')) {
+    numberOfGuestField.setCustomValidity('В двух комнатах можно разместить одного или двух гостей');
+  } else if (numberOfRoomField.value === '3' && (numberOfGuestField.value !== '1' || numberOfGuestField.value !== '2' || numberOfGuestField.value !== '3')) {
+    numberOfGuestField.setCustomValidity('В трех комнатах можно разместить одного, двух или трех гостей');
+  } else if (numberOfRoomField.value === '100' && numberOfGuestField.value !== '0') {
+    numberOfGuestField.setCustomValidity('Такие хоромы не для гостей');
+  } else {
+    numberOfGuestField.setCustomValidity('');
+  }
+}
+
+numberOfRoomField.addEventListener('change', function () {
+  validateRoomAndGuest();
+});
+
+numberOfGuestField.addEventListener('change', function () {
+  validateRoomAndGuest();
+});
