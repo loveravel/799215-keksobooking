@@ -330,6 +330,13 @@ mainPin.addEventListener('mousedown', function (evt) {
   var onMouseMove = function (moveEvt) {
     moveEvt.preventDefault();
 
+    var limits = {
+      top: 130,
+      left: 0,
+      bottom: 630,
+      right: 1200 - MAIN_PIN_WIDTH
+    };
+
     var shift = {
       x: startCoordinateList.x - moveEvt.clientX,
       y: startCoordinateList.y - moveEvt.clientY
@@ -340,8 +347,23 @@ mainPin.addEventListener('mousedown', function (evt) {
       y: moveEvt.clientY
     };
 
-    mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
-    mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
+    var mainPinTop = mainPin.offsetTop - shift.y;
+    var mainPinLeft = mainPin.offsetLeft - shift.x;
+
+    if (mainPinLeft < limits.left) {
+      mainPinLeft = limits.left;
+    } else if (mainPinLeft > limits.right) {
+      mainPinLeft = limits.right;
+    }
+
+    if (mainPinTop < limits.top) {
+      mainPinTop = limits.top;
+    } else if (mainPinTop > limits.bottom) {
+      mainPinTop = limits.bottom;
+    }
+
+    mainPin.style.top = mainPinTop + 'px';
+    mainPin.style.left = mainPinLeft + 'px';
     autoCompleteAddress();
   };
 
