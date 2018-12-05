@@ -6,7 +6,6 @@ var MAIN_PIN_WIDTH = 60;
 var MAIN_PIN_HEIGHT = 80;
 var ESC_KEYCODE = 27;
 var NUMBER_OF_NOTICES = 8;
-var MAX_PRICE = 1000000;
 
 var OptionsCard = {
   TITLE_LIST: [
