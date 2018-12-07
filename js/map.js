@@ -40,14 +40,34 @@
 
   disableFilterList();
 
+  function insertMapPinList() {
+    var fragment = document.createDocumentFragment();
+    for (var i = 0; i < window.data.NUMBER_OF_NOTICES; i++) {
+      fragment.appendChild(
+          window.mapElements.pin(
+              window.mapElements.authorOptionList[i],
+              window.mapElements.offerOptionList[i],
+              window.mapElements.locationOptionList[i]));
+    }
+    window.data.MAP.insertBefore(fragment, window.data.FILTERS_CONTAINER);
+  }
+  function insertCardList() {
+    var fragment = document.createDocumentFragment();
+    for (var i = 0; i < window.data.NUMBER_OF_NOTICES; i++) {
+      fragment.appendChild(window.mapElements.card(
+          window.mapElements.authorOptionList[i],
+          window.mapElements.offerOptionList[i]));
+    }
+    window.data.MAP.insertBefore(fragment, window.data.FILTERS_CONTAINER);
+  }
   var mainPin = document.querySelector('.map__pin--main');
   var form = document.querySelector('.ad-form');
 
   var onMainPinClick = function () {
-    window.constants.MAP.classList.remove('map--faded');
+    window.data.MAP.classList.remove('map--faded');
     if (document.querySelectorAll('.map__pin').length === 1) {
-      window.pin();
-      window.card();
+      insertMapPinList();
+      insertCardList();
       enableFilterList();
     }
     form.classList.remove('ad-form--disabled');
