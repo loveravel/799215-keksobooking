@@ -24,54 +24,14 @@
     window.util.MAP.insertBefore(fragment, window.util.FILTERS_CONTAINER);
   };
 
-  function insertMapPinList() {
-    var fragment = document.createDocumentFragment();
-    for (var i = 0; i < window.util.NUMBER_OF_NOTICES; i++) {
-      fragment.appendChild(
-          window.pinMaker(
-              window.optionsMaker.authorOptionList[i],
-              window.optionsMaker.offerOptionList[i],
-              window.optionsMaker.locationOptionList[i]));
-    }
-    window.util.MAP.insertBefore(fragment, window.util.FILTERS_CONTAINER);
-  }
-
   var onError = function () {
     return '';
   };
 
-  function insertCardList() {
-    var fragment = document.createDocumentFragment();
-    for (var i = 0; i < window.util.NUMBER_OF_NOTICES; i++) {
-      fragment.appendChild(
-          window.cardMaker(
-              window.optionsMaker.authorOptionList[i],
-              window.optionsMaker.offerOptionList[i]));
-    }
-    window.util.MAP.insertBefore(fragment, window.util.FILTERS_CONTAINER);
-  }
-
   var onMainPinClick = function () {
     window.util.MAP.classList.remove('map--faded');
     if (document.querySelectorAll('.map__pin').length === 1) {
-      insertMapPinList();
-      insertCardList();
-      window.load(onLoad, onError);
-      /* window.util.insertElementList(
-          window.pinMaker(
-              window.optionsMaker.authorOptionList,
-              window.optionsMaker.offerOptionList,
-              window.optionsMaker.locationOptionList),
-          window.util.NUMBER_OF_NOTICES,
-          window.util.MAP,
-          window.util.FILTERS_CONTAINER);
-      window.util.insertElementList(
-          window.cardMaker(
-              window.optionsMaker.authorOptionList,
-              window.optionsMaker.offerOptionList),
-          window.util.NUMBER_OF_NOTICES,
-          window.util.MAP,
-          window.util.FILTERS_CONTAINER);*/
+      window.backend.load(onLoad, onError);
       window.util.disableFilterList(false);
     }
     window.util.FORM.classList.remove('ad-form--disabled');

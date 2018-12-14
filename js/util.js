@@ -8,11 +8,6 @@
     FILTERS_CONTAINER: document.querySelector('.map__filters-container'),
     FORM: document.querySelector('.ad-form'),
     ESC_KEYCODE: 27,
-    isEscEvent: function (evt, action) {
-      if (evt.keyCode === window.util.ESC_KEYCODE) {
-        action();
-      }
-    },
     getRandomInteger: function (min, max) {
       var rand = min - 0.5 + Math.random() * (max - min + 1);
       rand = Math.round(rand);
@@ -93,12 +88,5 @@
       inputAddress.value = (+element.style.left.substr(0, element.style.left.length - 2) + width / 2)
         + ', ' + (+element.style.top.substr(0, element.style.top.length - 2) + height);
     }
-    /* insertElementList: function (element, amountElements, whereInsert, beforeWhat) {
-      var fragment = document.createDocumentFragment();
-      for (var i = 0; i < amountElements; i++) {
-        fragment.appendChild(element);
-      }
-      whereInsert.insertBefore(fragment, beforeWhat);
-    }*/
   };
 })();
