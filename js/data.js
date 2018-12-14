@@ -2,9 +2,6 @@
 
 (function () {
   window.data = {
-    NUMBER_OF_NOTICES: 8,
-    MAP: document.querySelector('.map'),
-    FILTERS_CONTAINER: document.querySelector('.map__filters-container'),
     OptionCard: {
       TITLE_LIST: [
         'Большая уютная квартира',
@@ -41,25 +38,6 @@
         'conditioner'
       ],
       DESCRIPTION_LIST: ''
-    },
-    getRandomInteger: function (min, max) {
-      var rand = min - 0.5 + Math.random() * (max - min + 1);
-      rand = Math.round(rand);
-      return rand;
-    },
-    getRandomArray: function (arr, n) {
-      var result = new Array(n);
-      var len = arr.length;
-      var taken = new Array(len);
-      if (n > len) {
-        throw new RangeError('getRandomArray: more elements taken than available');
-      }
-      while (n--) {
-        var x = Math.floor(Math.random() * len);
-        result[n] = arr[x in taken ? taken[x] : x];
-        taken[x] = --len in taken ? taken[len] : len;
-      }
-      return result.sort();
     }
   };
 })();

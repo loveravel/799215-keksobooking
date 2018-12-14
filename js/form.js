@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var form = document.querySelector('.map__filter');
   var numberOfRoomField = document.querySelector('#room_number');
   var numberOfGuestField = document.querySelector('#capacity');
 
@@ -26,5 +27,12 @@
 
   numberOfGuestField.addEventListener('change', function () {
     validateRoomAndGuest();
+  });
+
+  form.addEventListener('submit', function (evt) {
+    window.upload(new FormData(form), function (responce) {
+      // Перевод формы в неактивное состояние (см. ТЗ)
+    });
+    evt.preventDefault();
   });
 })();
