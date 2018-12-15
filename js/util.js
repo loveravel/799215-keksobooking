@@ -2,7 +2,7 @@
 
 (function () {
   window.util = {
-    NUMBER_OF_NOTICES: 8,
+    NUMBER_OF_NOTICES: 5,
     MAP: document.querySelector('.map'),
     MAIN_PIN: document.querySelector('.map__pin--main'),
     FILTERS_CONTAINER: document.querySelector('.map__filters-container'),
