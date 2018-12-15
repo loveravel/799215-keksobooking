@@ -14,11 +14,12 @@
     MAX_Y: 630
   };
 
-  var onLoad = function (pins) {
+  var onLoad = function (options) {
     var fragment = document.createDocumentFragment();
 
     for (var i = 0; i < window.util.NUMBER_OF_NOTICES; i++) {
-      fragment.appendChild(window.pinMaker(pins[i]));
+      fragment.appendChild(window.pinMaker(options[i]));
+      fragment.appendChild(window.cardMaker(options[i]));
     }
 
     window.util.MAP.insertBefore(fragment, window.util.FILTERS_CONTAINER);

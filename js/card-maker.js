@@ -5,7 +5,9 @@
 (function () {
   var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 
-  window.cardMaker = function (author, offer) {
+  window.cardMaker = function (card) {
+    var author = card.author ? card.author : false;
+    var offer = card.offer ? card.offer : false;
     var cardElement = cardTemplate.cloneNode(true);
     cardElement.classList.add('hidden');
     cardElement.querySelector('.popup__avatar').src = author.avatar;

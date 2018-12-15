@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  var URL = 'https//js.dumb.academy/keksobooking';
+  var URL = 'https://js.dump.academy/keksobooking';
 
   var onXhrEvent = function (xhr, onLoad, onError) {
     xhr.addEventListener('load', function () {
