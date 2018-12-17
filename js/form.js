@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  var form = document.querySelector('.map__filter');
+  var form = document.querySelector('.ad-form');
   var numberOfRoomField = document.querySelector('#room_number');
   var numberOfGuestField = document.querySelector('#capacity');
 
@@ -70,6 +70,17 @@
   price.addEventListener('change', function () {
     validateTypeAndPrice();
   });
+
+  function closeSuccess(element) {
+    document.body.removeChild(element);
+  }
+
+  function onSuccess() {
+    var successTemplate = document.querySelector('#success').content.querySelector('.success');
+    var successElement = successTemplate.cloneNode(true);
+    document.body.appendChild(successElement);
+    setTimeout(closeSuccess(successElement), 5000);
+  }
 
   form.addEventListener('submit', function (evt) {
     window.backend.upload(new FormData(form), onSuccess, window.backend.onError);

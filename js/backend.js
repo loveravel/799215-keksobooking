@@ -19,6 +19,7 @@
   function onCloseError(button, error) {
     button.addEventListener('click', function () {
       document.body.removeChild(error);
+      window.util.reset();
     });
   }
 

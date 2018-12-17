@@ -45,7 +45,7 @@
         }
       }
     },
-    resetForm: function () {
+    reset: function () {
       window.util.disableFilterList(true);
       window.util.MAP.classList.add('map--faded');
       window.util.FORM.classList.add('ad-form--disabled');
