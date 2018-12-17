@@ -45,11 +45,6 @@
         }
       }
     },
-    reset: function () {
-      window.util.disableFilterList(true);
-      window.util.MAP.classList.add('map--faded');
-      window.util.FORM.classList.add('ad-form--disabled');
-    },
     autoCompleteAddress: function (element, width, height) {
       var inputAddress = document.querySelector('#address');
       inputAddress.disabled = true;

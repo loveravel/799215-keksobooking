@@ -79,7 +79,10 @@
     var successTemplate = document.querySelector('#success').content.querySelector('.success');
     var successElement = successTemplate.cloneNode(true);
     document.body.appendChild(successElement);
-    setTimeout(closeSuccess(successElement), 5000);
+    window.map.reset();
+    setTimeout(function () {
+      closeSuccess(successElement);
+    }, 3000);
   }
 
   form.addEventListener('submit', function (evt) {

@@ -141,4 +141,22 @@
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   });
+
+  window.map = {
+    reset: function () {
+      window.util.disableFilterList(true);
+      window.util.MAP.classList.add('map--faded');
+      window.util.FORM.classList.add('ad-form--disabled');
+      MainPin.ELEMENT.style.top = 375 + 'px';
+      MainPin.ELEMENT.style.left = 570 + 'px';
+      window.util.autoCompleteAddress(MainPin.ELEMENT, MainPin.WIDTH, MainPin.HEIGHT);
+      var pinList = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+      console.log(pinList);
+      var cardList = document.querySelectorAll('.map__card');
+      for (var i = 0; i < pinList.length; i++) {
+        document.removeChild(pinList[i]);
+        document.removeChild(cardList[i]);
+      }
+    }
+  };
 })();
