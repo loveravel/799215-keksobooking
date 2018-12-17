@@ -72,9 +72,7 @@
   });
 
   form.addEventListener('submit', function (evt) {
-    window.upload(new FormData(form), function (responce) {
-      // Перевод формы в неактивное состояние (см. ТЗ)
-    });
+    window.backend.upload(new FormData(form), onSuccess, window.backend.onError);
     evt.preventDefault();
   });
 })();

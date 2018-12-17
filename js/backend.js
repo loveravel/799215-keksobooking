@@ -16,6 +16,12 @@
     });
   };
 
+  function onCloseError(button, error) {
+    button.addEventListener('click', function () {
+      document.body.removeChild(error);
+    });
+  }
+
   window.backend = {
     load: function (onLoad, onError) {
       var xhr = new XMLHttpRequest();
@@ -34,6 +40,14 @@
 
       xhr.open('POST', URL);
       xhr.send(data);
+    },
+    onError: function (errorMessage) {
+      var errorTemplate = document.querySelector('#error').content.querySelector('.error');
+      var errorElement = errorTemplate.cloneNode(true);
+      errorElement.querySelector('.error__message').textContent = errorMessage;
+      document.body.appendChild(errorElement);
+      var closeButton = errorElement.querySelector('.error__button');
+      onCloseError(closeButton, errorElement);
     }
   };
 })();

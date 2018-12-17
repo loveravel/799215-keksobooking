@@ -25,17 +25,13 @@
     window.util.MAP.insertBefore(fragment, window.util.FILTERS_CONTAINER);
   };
 
-  var onError = function () {
-    return '';
-  };
-
   var onMainPinClick = function () {
     window.util.MAP.classList.remove('map--faded');
+    window.util.FORM.classList.remove('ad-form--disabled');
     if (document.querySelectorAll('.map__pin').length === 1) {
-      window.backend.load(onLoad, onError);
+      window.backend.load(onLoad, window.backend.onError);
       window.util.disableFilterList(false);
     }
-    window.util.FORM.classList.remove('ad-form--disabled');
 
     var pinList = document.querySelectorAll('.map__pin:not(.map__pin--main)');
     var cardList = document.querySelectorAll('.map__card');
@@ -142,5 +138,4 @@
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   });
-
 })();
