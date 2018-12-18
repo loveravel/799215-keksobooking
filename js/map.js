@@ -76,9 +76,9 @@
   var onMainPinClick = function () {
     window.util.MAP.classList.remove('map--faded');
     window.util.FORM.classList.remove('ad-form--disabled');
+    window.util.disableFilterList(false);
     if (document.querySelectorAll('.map__pin').length === 1) {
       window.backend.load(onLoad, window.backend.onError);
-      window.util.disableFilterList(false);
     }
   };
 
@@ -150,12 +150,19 @@
       MainPin.ELEMENT.style.top = 375 + 'px';
       MainPin.ELEMENT.style.left = 570 + 'px';
       window.util.autoCompleteAddress(MainPin.ELEMENT, MainPin.WIDTH, MainPin.HEIGHT);
+      document.querySelector('#title').value = '';
+      document.querySelector('#price').value = '';
+      document.querySelector('#type').value = 'flat';
+      document.querySelector('#timein').value = '12:00';
+      document.querySelector('#timeout').value = '12:00';
+      document.querySelector('#room_number').value = '1';
+      document.querySelector('#capacity').value = '1';
+      document.querySelector('#description').value = '';
       var pinList = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-      console.log(pinList);
       var cardList = document.querySelectorAll('.map__card');
       for (var i = 0; i < pinList.length; i++) {
-        document.removeChild(pinList[i]);
-        document.removeChild(cardList[i]);
+        pinList[i].remove();
+        cardList[i].remove();
       }
     }
   };

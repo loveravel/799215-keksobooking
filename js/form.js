@@ -73,13 +73,13 @@
 
   function closeSuccess(element) {
     document.body.removeChild(element);
+    window.map.reset();
   }
 
   function onSuccess() {
     var successTemplate = document.querySelector('#success').content.querySelector('.success');
     var successElement = successTemplate.cloneNode(true);
     document.body.appendChild(successElement);
-    window.map.reset();
     setTimeout(function () {
       closeSuccess(successElement);
     }, 3000);
