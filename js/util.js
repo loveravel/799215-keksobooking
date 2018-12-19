@@ -8,25 +8,6 @@
     FILTERS_CONTAINER: document.querySelector('.map__filters-container'),
     FORM: document.querySelector('.ad-form'),
     ESC_KEYCODE: 27,
-    getRandomInteger: function (min, max) {
-      var rand = min - 0.5 + Math.random() * (max - min + 1);
-      rand = Math.round(rand);
-      return rand;
-    },
-    getRandomArray: function (arr, n) {
-      var result = new Array(n);
-      var len = arr.length;
-      var taken = new Array(len);
-      if (n > len) {
-        throw new RangeError('getRandomArray: more elements taken than available');
-      }
-      while (n--) {
-        var x = Math.floor(Math.random() * len);
-        result[n] = arr[x in taken ? taken[x] : x];
-        taken[x] = --len in taken ? taken[len] : len;
-      }
-      return result.sort();
-    },
     getFilterList: function () {
       var filterList = [];
       filterList.push(document.querySelectorAll('.ad-form-header input'));
