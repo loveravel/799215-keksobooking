@@ -14,21 +14,104 @@
     MAX_Y: 630
   };
 
+  var MapFilter = {
+    HOUSING_TYPE: document.querySelector('#housing-type'),
+    HOUSING_PRICE: document.querySelector('#housing-price'),
+    HOUSING_ROOMS: document.querySelector('#housing-rooms'),
+    HOUSING_GUESTS: document.querySelector('#housing-guests'),
+    FEATURE_WIFI: document.querySelector('#filter-wifi'),
+    FEATURE_DISHWASHER: document.querySelector('#filter-dishwasher'),
+    FEATURE_PARKING: document.querySelector('#filter-parking'),
+    FEATURE_WASHER: document.querySelector('#filter-washer'),
+    FEATURE_ELEVATOR: document.querySelector('#filter-elevator'),
+    FEATURE_CONDITIONER: document.querySelector('#filter-conditioner')
+  };
+
   window.util.autoCompleteAddress(MainPin.ELEMENT, MainPin.WIDTH, MainPin.HEIGHT);
+  window.util.disableFilterList(true);
 
-  var onLoad = function (options) {
-    var fragment = document.createDocumentFragment();
+  var noticeList = [];
 
-    for (var i = 0; i < window.util.NUMBER_OF_NOTICES; i++) {
-      fragment.appendChild(window.pinMaker(options[i]));
-      fragment.appendChild(window.cardMaker(options[i]));
+  var onLoad = function (data) {
+    noticeList = data;
+
+    window.map.renderElements(noticeList);
+
+    var pinListAfterRender = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+    var cardListAfterRender = document.querySelectorAll('.map__card');
+    var closeCardButtonList = document.querySelectorAll('.popup__close');
+
+    function updateMap() {
+      window.util.clearMap();
+      updateNoticeList = noticeList;
+
+      if (MapFilter.HOUSING_ROOMS.value !== 'any') {
+        var updateNoticeList = updateNoticeList.filter(function (notice) {
+          return notice.offer.rooms.toString() === MapFilter.HOUSING_ROOMS.value;
+        });
+      }
+
+      if (MapFilter.HOUSING_TYPE.value !== 'any') {
+        updateNoticeList = updateNoticeList.filter(function (notice) {
+          return notice.offer.type === MapFilter.HOUSING_TYPE.value;
+        });
+      }
+
+      if (MapFilter.HOUSING_GUESTS.value !== 'any') {
+        updateNoticeList = updateNoticeList.filter(function (notice) {
+          return notice.offer.guests.toString() === MapFilter.HOUSING_GUESTS.value;
+        });
+      }
+
+      if (MapFilter.HOUSING_PRICE.value === 'low') {
+        updateNoticeList = updateNoticeList.filter(function (notice) {
+          return notice.offer.price < 10000;
+        });
+      } else if (MapFilter.HOUSING_PRICE.value === 'middle') {
+        updateNoticeList = updateNoticeList.filter(function (notice) {
+          return notice.offer.price >= 10000 && notice.offer.price < 50000;
+        });
+      } else if (MapFilter.HOUSING_PRICE.value === 'high') {
+        updateNoticeList = updateNoticeList.filter(function (notice) {
+          return notice.offer.price >= 50000;
+        });
+      }
+
+      if (updateNoticeList) {
+        window.map.renderElements(updateNoticeList);
+      }
     }
 
-    window.util.MAP.insertBefore(fragment, window.util.FILTERS_CONTAINER);
-
-    var pinList = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-    var cardList = document.querySelectorAll('.map__card');
-    var closeCardButtonList = document.querySelectorAll('.popup__close');
+    MapFilter.FEATURE_WIFI.addEventListener('click', function () {
+      updateMap(noticeList);
+    });
+    MapFilter.FEATURE_DISHWASHER.addEventListener('click', function () {
+      updateMap(noticeList);
+    });
+    MapFilter.FEATURE_PARKING.addEventListener('click', function () {
+      updateMap(noticeList);
+    });
+    MapFilter.FEATURE_WASHER.addEventListener('click', function () {
+      updateMap(noticeList);
+    });
+    MapFilter.FEATURE_ELEVATOR.addEventListener('click', function () {
+      updateMap(noticeList);
+    });
+    MapFilter.FEATURE_CONDITIONER.addEventListener('click', function () {
+      updateMap(noticeList);
+    });
+    MapFilter.HOUSING_TYPE.addEventListener('change', function () {
+      updateMap(noticeList);
+    });
+    MapFilter.HOUSING_PRICE.addEventListener('change', function () {
+      updateMap(noticeList);
+    });
+    MapFilter.HOUSING_ROOMS.addEventListener('change', function () {
+      updateMap(noticeList);
+    });
+    MapFilter.HOUSING_GUESTS.addEventListener('change', function () {
+      updateMap(noticeList);
+    });
 
     var onPinClick = function (pin, card, closeCardButton) {
       pin.addEventListener('click', function () {
@@ -68,8 +151,8 @@
       }
     };
 
-    for (i = 0; i < pinList.length; i++) {
-      onPinClick(pinList[i], cardList[i], closeCardButtonList[i]);
+    for (var i = 0; i < pinListAfterRender.length; i++) {
+      onPinClick(pinListAfterRender[i], cardListAfterRender[i], closeCardButtonList[i]);
     }
   };
 
@@ -158,12 +241,24 @@
       document.querySelector('#room_number').value = '1';
       document.querySelector('#capacity').value = '1';
       document.querySelector('#description').value = '';
-      var pinList = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-      var cardList = document.querySelectorAll('.map__card');
-      for (var i = 0; i < pinList.length; i++) {
-        pinList[i].remove();
-        cardList[i].remove();
+      window.util.clearMap();
+    },
+    renderElements: function (notice) {
+      console.log(notice);
+      var cardList = window.cardMaker(notice);
+      var pinList = window.pinMaker(notice);
+      var fragment = document.createDocumentFragment();
+
+      /*if (notice.length > window.util.NUMBER_OF_NOTICES) {
+        notice.length = window.util.NUMBER_OF_NOTICES;
+      }*/
+
+      for (var i = 0; i < notice.length; i++) {
+        fragment.appendChild(cardList[i]);
+        fragment.appendChild(pinList[i]);
       }
+
+      window.util.MAP.insertBefore(fragment, window.util.FILTERS_CONTAINER);
     }
   };
 })();

@@ -5,7 +5,7 @@
 (function () {
   var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 
-  window.cardMaker = function (card) {
+  function makeCard(card) {
     var author = card.author ? card.author : false;
     var offer = card.offer ? card.offer : false;
 
@@ -44,5 +44,13 @@
       }
       return cardElement;
     }
+  }
+
+  window.cardMaker = function (data) {
+    var cardList = [];
+    for (var i = 0; i < data.length; i++) {
+      cardList.push(makeCard(data[i]));
+    }
+    return cardList;
   };
 })();

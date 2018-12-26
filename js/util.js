@@ -31,6 +31,14 @@
       inputAddress.disabled = true;
       inputAddress.value = (+element.style.left.substr(0, element.style.left.length - 2) + width / 2)
         + ', ' + (+element.style.top.substr(0, element.style.top.length - 2) + height);
+    },
+    clearMap: function () {
+      var pinListAfterRender = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+      var cardListAfterRender = document.querySelectorAll('.map__card');
+      for (var i = 0; i < pinListAfterRender.length; i++) {
+        pinListAfterRender[i].remove();
+        cardListAfterRender[i].remove();
+      }
     }
   };
 })();
