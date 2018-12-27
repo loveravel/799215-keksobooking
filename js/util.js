@@ -8,6 +8,7 @@
     FILTERS_CONTAINER: document.querySelector('.map__filters-container'),
     FORM: document.querySelector('.ad-form'),
     ESC_KEYCODE: 27,
+    DEBOUNCE_INTERVAL: 500,
     getFilterList: function () {
       var filterList = [];
       filterList.push(document.querySelectorAll('.ad-form-header input'));
@@ -39,6 +40,19 @@
         pinListAfterRender[i].remove();
         cardListAfterRender[i].remove();
       }
+    },
+    debounce: function (cb) {
+      var lastTimeout = null;
+
+      return function () {
+        var parameters = arguments;
+        if (lastTimeout) {
+          window.clearTimeout(lastTimeout);
+        }
+        lastTimeout = window.setTimeout(function () {
+          cb.apply(null, parameters);
+        }, window.util.DEBOUNCE_INTERVAL);
+      };
     }
   };
 })();
