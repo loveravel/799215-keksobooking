@@ -35,18 +35,23 @@
   var onLoad = function (data) {
     noticeList = data;
 
-    window.map.renderElements(noticeList);
+    function checkNumbersOfNoticeList(list) {
+      var newNoticeList = list;
+      if (list.length > window.util.NUMBER_OF_NOTICES) {
+        newNoticeList.length = window.util.NUMBER_OF_NOTICES;
+      }
+      return newNoticeList;
+    }
 
-    var pinListAfterRender = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-    var cardListAfterRender = document.querySelectorAll('.map__card');
-    var closeCardButtonList = document.querySelectorAll('.popup__close');
+    //var newNoticeList = checkNumbersOfNoticeList(noticeList);
+    window.map.renderElements(noticeList);
 
     function updateMap() {
       window.util.clearMap();
-      updateNoticeList = noticeList;
+      var updateNoticeList = noticeList;
 
       if (MapFilter.HOUSING_ROOMS.value !== 'any') {
-        var updateNoticeList = updateNoticeList.filter(function (notice) {
+        updateNoticeList = updateNoticeList.filter(function (notice) {
           return notice.offer.rooms.toString() === MapFilter.HOUSING_ROOMS.value;
         });
       }
@@ -77,9 +82,90 @@
         });
       }
 
+      if (MapFilter.FEATURE_WIFI.checked) {
+        updateNoticeList = updateNoticeList.filter(function (notice) {
+          var bool = false;
+          for (var i = 0; i < notice.offer.features.length; i++) {
+            bool = (notice.offer.features[i] === 'wifi');
+            if (bool) {
+              break;
+            }
+          }
+          return bool;
+        });
+      }
+
+      if (MapFilter.FEATURE_DISHWASHER.checked) {
+        updateNoticeList = updateNoticeList.filter(function (notice) {
+          var bool = false;
+          for (var i = 0; i < notice.offer.features.length; i++) {
+            bool = (notice.offer.features[i] === 'dishwasher');
+            if (bool) {
+              break;
+            }
+          }
+          return bool;
+        });
+      }
+
+      if (MapFilter.FEATURE_PARKING.checked) {
+        updateNoticeList = updateNoticeList.filter(function (notice) {
+          var bool = false;
+          for (var i = 0; i < notice.offer.features.length; i++) {
+            bool = (notice.offer.features[i] === 'parking');
+            if (bool) {
+              break;
+            }
+          }
+          return bool;
+        });
+      }
+
+      if (MapFilter.FEATURE_WASHER.checked) {
+        updateNoticeList = updateNoticeList.filter(function (notice) {
+          var bool = false;
+          for (var i = 0; i < notice.offer.features.length; i++) {
+            bool = (notice.offer.features[i] === 'washer');
+            if (bool) {
+              break;
+            }
+          }
+          return bool;
+        });
+      }
+
+      if (MapFilter.FEATURE_ELEVATOR.checked) {
+        updateNoticeList = updateNoticeList.filter(function (notice) {
+          var bool = false;
+          for (var i = 0; i < notice.offer.features.length; i++) {
+            bool = (notice.offer.features[i] === 'elevator');
+            if (bool) {
+              break;
+            }
+          }
+          return bool;
+        });
+      }
+
+      if (MapFilter.FEATURE_CONDITIONER.checked) {
+        updateNoticeList = updateNoticeList.filter(function (notice) {
+          var bool = false;
+          for (var i = 0; i < notice.offer.features.length; i++) {
+            bool = (notice.offer.features[i] === 'conditioner');
+            if (bool) {
+              break;
+            }
+          }
+          return bool;
+        });
+      }
+
       if (updateNoticeList) {
+        // checkNumbersOfNoticeList(updateNoticeList);
         window.map.renderElements(updateNoticeList);
       }
+
+      makeListenerListForPinList();
     }
 
     MapFilter.FEATURE_WIFI.addEventListener('click', function () {
@@ -151,9 +237,17 @@
       }
     };
 
-    for (var i = 0; i < pinListAfterRender.length; i++) {
-      onPinClick(pinListAfterRender[i], cardListAfterRender[i], closeCardButtonList[i]);
+    function makeListenerListForPinList() {
+      var pinListAfterRender = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+      var cardListAfterRender = document.querySelectorAll('.map__card');
+      var closeCardButtonList = document.querySelectorAll('.popup__close');
+
+      for (var i = 0; i < pinListAfterRender.length; i++) {
+        onPinClick(pinListAfterRender[i], cardListAfterRender[i], closeCardButtonList[i]);
+      }
     }
+
+    makeListenerListForPinList();
   };
 
   var onMainPinClick = function () {
@@ -249,7 +343,7 @@
       var pinList = window.pinMaker(notice);
       var fragment = document.createDocumentFragment();
 
-      /*if (notice.length > window.util.NUMBER_OF_NOTICES) {
+      /* if (notice.length > window.util.NUMBER_OF_NOTICES) {
         notice.length = window.util.NUMBER_OF_NOTICES;
       }*/
 
