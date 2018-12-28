@@ -13,7 +13,7 @@
       var filterList = [];
       filterList.push(document.querySelectorAll('.ad-form-header input'));
       filterList.push(document.querySelectorAll('.ad-form__element select'));
-      filterList.push(document.querySelectorAll('.ad-form__element input'));
+      filterList.push(document.querySelectorAll('.ad-form__element input:not(#address)'));
       filterList.push(document.querySelectorAll('.ad-form__element textarea'));
       filterList.push(document.querySelectorAll('.map__filters select'));
       filterList.push(document.querySelectorAll('.map__filters input'));
