@@ -8,25 +8,7 @@
     FILTERS_CONTAINER: document.querySelector('.map__filters-container'),
     FORM: document.querySelector('.ad-form'),
     ESC_KEYCODE: 27,
-    getRandomInteger: function (min, max) {
-      var rand = min - 0.5 + Math.random() * (max - min + 1);
-      rand = Math.round(rand);
-      return rand;
-    },
-    getRandomArray: function (arr, n) {
-      var result = new Array(n);
-      var len = arr.length;
-      var taken = new Array(len);
-      if (n > len) {
-        throw new RangeError('getRandomArray: more elements taken than available');
-      }
-      while (n--) {
-        var x = Math.floor(Math.random() * len);
-        result[n] = arr[x in taken ? taken[x] : x];
-        taken[x] = --len in taken ? taken[len] : len;
-      }
-      return result.sort();
-    },
+    DEBOUNCE_INTERVAL: 500,
     getFilterList: function () {
       var filterList = [];
       filterList.push(document.querySelectorAll('.ad-form-header input'));
@@ -50,6 +32,28 @@
       inputAddress.disabled = true;
       inputAddress.value = (+element.style.left.substr(0, element.style.left.length - 2) + width / 2)
         + ', ' + (+element.style.top.substr(0, element.style.top.length - 2) + height);
+    },
+    clearMap: function () {
+      var pinListAfterRender = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+      var cardListAfterRender = document.querySelectorAll('.map__card');
+      for (var i = 0; i < pinListAfterRender.length; i++) {
+        pinListAfterRender[i].remove();
+        cardListAfterRender[i].remove();
+      }
+    },
+    debounce: function (cb) {
+      var _this = this;
+      var lastTimeout = null;
+
+      return function () {
+        var parameters = arguments;
+        if (lastTimeout) {
+          window.clearTimeout(lastTimeout);
+        }
+        lastTimeout = window.setTimeout(function () {
+          cb.apply(null, parameters);
+        }, _this.DEBOUNCE_INTERVAL);
+      };
     }
   };
 })();
