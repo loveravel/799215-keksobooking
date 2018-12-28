@@ -42,6 +42,7 @@
       }
     },
     debounce: function (cb) {
+      var _this = this;
       var lastTimeout = null;
 
       return function () {
@@ -51,7 +52,7 @@
         }
         lastTimeout = window.setTimeout(function () {
           cb.apply(null, parameters);
-        }, window.util.DEBOUNCE_INTERVAL);
+        }, _this.DEBOUNCE_INTERVAL);
       };
     }
   };

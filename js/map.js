@@ -127,36 +127,16 @@
       makeListenerListForPinList();
     }
 
-    MapFilter.FEATURE_WIFI.addEventListener('click', function () {
-      window.util.debounce(updateMap(noticeList));
-    });
-    MapFilter.FEATURE_DISHWASHER.addEventListener('click', function () {
-      window.util.debounce(updateMap(noticeList));
-    });
-    MapFilter.FEATURE_PARKING.addEventListener('click', function () {
-      window.util.debounce(updateMap(noticeList));
-    });
-    MapFilter.FEATURE_WASHER.addEventListener('click', function () {
-      window.util.debounce(updateMap(noticeList));
-    });
-    MapFilter.FEATURE_ELEVATOR.addEventListener('click', function () {
-      window.util.debounce(updateMap(noticeList));
-    });
-    MapFilter.FEATURE_CONDITIONER.addEventListener('click', function () {
-      window.util.debounce(updateMap(noticeList));
-    });
-    MapFilter.HOUSING_TYPE.addEventListener('change', function () {
-      window.util.debounce(updateMap(noticeList));
-    });
-    MapFilter.HOUSING_PRICE.addEventListener('change', function () {
-      window.util.debounce(updateMap(noticeList));
-    });
-    MapFilter.HOUSING_ROOMS.addEventListener('change', function () {
-      window.util.debounce(updateMap(noticeList));
-    });
-    MapFilter.HOUSING_GUESTS.addEventListener('change', function () {
-      window.util.debounce(updateMap(noticeList));
-    });
+    for (var i = 0; i < document.querySelectorAll('.map__feature').length; i++) {
+      document.querySelectorAll('.map__feature')[i].onclick = window.util.debounce(function () {
+        updateMap(noticeList);
+      });
+    }
+    for (i = 0; i < document.querySelectorAll('.map__filter').length; i++) {
+      document.querySelectorAll('.map__filter')[i].onchange = window.util.debounce(function () {
+        updateMap(noticeList);
+      });
+    }
 
     var onPinClick = function (pin, card, closeCardButton) {
       pin.addEventListener('click', function () {
