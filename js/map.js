@@ -35,15 +35,6 @@
   var onLoad = function (data) {
     noticeList = data;
 
-    function checkNumbersOfNoticeList(list) {
-      var newNoticeList = list;
-      if (list.length > window.util.NUMBER_OF_NOTICES) {
-        newNoticeList.length = window.util.NUMBER_OF_NOTICES;
-      }
-      return newNoticeList;
-    }
-
-    //var newNoticeList = checkNumbersOfNoticeList(noticeList);
     window.map.renderElements(noticeList);
 
     function updateMap() {
@@ -161,7 +152,6 @@
       }
 
       if (updateNoticeList) {
-        // checkNumbersOfNoticeList(updateNoticeList);
         window.map.renderElements(updateNoticeList);
       }
 
@@ -343,11 +333,10 @@
       var pinList = window.pinMaker(notice);
       var fragment = document.createDocumentFragment();
 
-      /* if (notice.length > window.util.NUMBER_OF_NOTICES) {
-        notice.length = window.util.NUMBER_OF_NOTICES;
-      }*/
-
       for (var i = 0; i < notice.length; i++) {
+        if (i === window.util.NUMBER_OF_NOTICES) {
+          break;
+        }
         fragment.appendChild(cardList[i]);
         fragment.appendChild(pinList[i]);
       }
