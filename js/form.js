@@ -128,4 +128,10 @@
     window.backend.upload(new FormData(form), onSuccess, window.backend.onError);
     evt.preventDefault();
   });
+
+  var buttonFormReset = document.querySelector('.ad-form__reset');
+  buttonFormReset.addEventListener('click', function (resetEvt) {
+    resetEvt.preventDefault();
+    window.map.reset();
+  });
 })();
