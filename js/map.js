@@ -73,81 +73,50 @@
         });
       }
 
+      function doFeatureFilter(notice, feature) {
+        var bool = false;
+        for (var i = 0; i < notice.offer.features.length; i++) {
+          bool = (notice.offer.features[i] === feature);
+          if (bool) {
+            break;
+          }
+        }
+        return bool;
+      }
+
       if (MapFilter.FEATURE_WIFI.checked) {
         updateNoticeList = updateNoticeList.filter(function (notice) {
-          var bool = false;
-          for (var i = 0; i < notice.offer.features.length; i++) {
-            bool = (notice.offer.features[i] === 'wifi');
-            if (bool) {
-              break;
-            }
-          }
-          return bool;
+          return doFeatureFilter(notice, 'wifi');
         });
       }
 
       if (MapFilter.FEATURE_DISHWASHER.checked) {
         updateNoticeList = updateNoticeList.filter(function (notice) {
-          var bool = false;
-          for (var i = 0; i < notice.offer.features.length; i++) {
-            bool = (notice.offer.features[i] === 'dishwasher');
-            if (bool) {
-              break;
-            }
-          }
-          return bool;
+          return doFeatureFilter(notice, 'dishwasher');
         });
       }
 
       if (MapFilter.FEATURE_PARKING.checked) {
         updateNoticeList = updateNoticeList.filter(function (notice) {
-          var bool = false;
-          for (var i = 0; i < notice.offer.features.length; i++) {
-            bool = (notice.offer.features[i] === 'parking');
-            if (bool) {
-              break;
-            }
-          }
-          return bool;
+          return doFeatureFilter(notice, 'parking');
         });
       }
 
       if (MapFilter.FEATURE_WASHER.checked) {
         updateNoticeList = updateNoticeList.filter(function (notice) {
-          var bool = false;
-          for (var i = 0; i < notice.offer.features.length; i++) {
-            bool = (notice.offer.features[i] === 'washer');
-            if (bool) {
-              break;
-            }
-          }
-          return bool;
+          return doFeatureFilter(notice, 'washer');
         });
       }
 
       if (MapFilter.FEATURE_ELEVATOR.checked) {
         updateNoticeList = updateNoticeList.filter(function (notice) {
-          var bool = false;
-          for (var i = 0; i < notice.offer.features.length; i++) {
-            bool = (notice.offer.features[i] === 'elevator');
-            if (bool) {
-              break;
-            }
-          }
-          return bool;
+          return doFeatureFilter(notice, 'elevator');
         });
       }
 
       if (MapFilter.FEATURE_CONDITIONER.checked) {
         updateNoticeList = updateNoticeList.filter(function (notice) {
-          var bool = false;
-          for (var i = 0; i < notice.offer.features.length; i++) {
-            bool = (notice.offer.features[i] === 'conditioner');
-            if (bool) {
-              break;
-            }
-          }
-          return bool;
+          return doFeatureFilter(notice, 'conditioner');
         });
       }
 
@@ -328,7 +297,6 @@
       window.util.clearMap();
     },
     renderElements: function (notice) {
-      console.log(notice);
       var cardList = window.cardMaker(notice);
       var pinList = window.pinMaker(notice);
       var fragment = document.createDocumentFragment();
