@@ -1,9 +1,48 @@
 'use strict';
 
 (function () {
+  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+
   var form = document.querySelector('.ad-form');
   var numberOfRoomField = document.querySelector('#room_number');
   var numberOfGuestField = document.querySelector('#capacity');
+
+  var avatarChooser = document.querySelector('.ad-form-header__input');
+  var avatarPreview = document.querySelector('.ad-form-header__preview img');
+
+  var photoListChooser = document.querySelector('.ad-form__input');
+  var photoListPreview = document.querySelector('.ad-form__photo');
+
+  function showPreviewPhotos(chooser, preview, amount) {
+    if (amount === 1) {
+      var file = chooser.files[0];
+    } else {
+      file = chooser.files;
+    }
+
+    var fileName = file.name.toLowerCase();
+    var matches = FILE_TYPES.some(function (it) {
+      return fileName.endsWith(it);
+    });
+
+    if (matches) {
+      var reader = new FileReader();
+
+      reader.addEventListener('load', function () {
+        avatarPreview.src = reader.result;
+      });
+
+      reader.readAsDataURL(file);
+    }
+  }
+
+  avatarChooser.addEventListener('change', function () {
+    showPreviewPhotos(avatarChooser, avatarPreview, 1);
+  });
+
+  photoListChooser.addEventListener('change', function () {
+    showPreviewPhotos(photoListChooser, photoListPreview);
+  });
 
   function validateRoomAndGuest() {
     var texts = [
