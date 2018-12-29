@@ -20,7 +20,7 @@
       return filterList;
     },
     disableFilterList: function (bool) {
-      var filterList = window.util.getFilterList();
+      var filterList = this.getFilterList();
       for (var i = 0; i < filterList.length; i++) {
         for (var j = 0; j < filterList[i].length; j++) {
           filterList[i][j].disabled = bool;
