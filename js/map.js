@@ -181,7 +181,7 @@
       var cardListAfterRender = document.querySelectorAll('.map__card');
       var closeCardButtonList = document.querySelectorAll('.popup__close');
 
-      for (var i = 0; i < pinListAfterRender.length; i++) {
+      for (i = 0; i < pinListAfterRender.length; i++) {
         onPinClick(pinListAfterRender[i], cardListAfterRender[i], closeCardButtonList[i]);
       }
     }
@@ -210,7 +210,7 @@
       return {
         left: element.offsetLeft,
         right: element.offsetLeft + element.offsetWidth
-      }
+      };
     }
 
     function checkCursorPosition(posX, posY, element) {
