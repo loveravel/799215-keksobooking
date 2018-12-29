@@ -4,8 +4,6 @@
   var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 
   var form = document.querySelector('.ad-form');
-  var numberOfRoomField = document.querySelector('#room_number');
-  var numberOfGuestField = document.querySelector('#capacity');
 
   var avatarChooser = document.querySelector('.ad-form-header__input');
   var avatarPreview = document.querySelector('.ad-form-header__preview img');
@@ -43,6 +41,9 @@
   photoListChooser.addEventListener('change', function () {
     showPreviewPhotos(photoListChooser, photoListPreview);
   });
+
+  var numberOfRoomField = document.querySelector('#room_number');
+  var numberOfGuestField = document.querySelector('#capacity');
 
   function validateRoomAndGuest() {
     var texts = [
@@ -110,6 +111,17 @@
     validateTypeAndPrice();
   });
 
+  var timein = document.querySelector('#timein');
+  var timeout = document.querySelector('#timeout');
+
+  timein.addEventListener('change', function () {
+    timeout.value = timein.value;
+  });
+
+  timeout.addEventListener('change', function () {
+    timein.value = timeout.value;
+  });
+
   function closeSuccess(element) {
     document.body.removeChild(element);
     window.map.reset();
@@ -125,8 +137,8 @@
   }
 
   form.addEventListener('submit', function (evt) {
-    window.backend.upload(new FormData(form), onSuccess, window.backend.onError);
     evt.preventDefault();
+    window.backend.upload(new FormData(form), onSuccess, window.backend.onError);
   });
 
   var buttonFormReset = document.querySelector('.ad-form__reset');
