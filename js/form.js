@@ -1,8 +1,6 @@
 'use strict';
 
 (function () {
-  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
-
   var form = document.querySelector('.ad-form');
 
   var avatarChooser = document.querySelector('.ad-form-header__input');
@@ -12,28 +10,22 @@
   var photoListPreview = document.querySelector('.ad-form__photo');
 
   function showPreviewPhotos(chooser, preview) {
-    var fragment = document.createDocumentFragment();
-    for (var i = 0; i < chooser.files.length; i++) {
-      var file = chooser.files[i];
-      var fileName = file.name.toLowerCase();
-      var matches = FILE_TYPES.some(function (it) {
-        return fileName.endsWith(it);
-      });
-
-      if (matches) {
-        var img = document.createElement('img');
-        img.file = file;
-        img.style = 'width: 60px; height: 60px; border-radius: 5px; margin: 5px;';
+    var files = chooser.files;
+    for (var i = 0, f; i < files.length; i++) {
+      f = files[i];
+      if (f.type.match('image.*')) {
         var reader = new FileReader();
-        reader.addEventListener('load', function () {
-          img.src = reader.result;
-        });
-        reader.readAsDataURL(file);
-        fragment.appendChild(img);
+        reader.onload = (function () {
+          return function (e) {
+            var img = document.createElement('img');
+            img.style = 'width: 60px; height: 60px; border-radius: 5px; margin: 5px;';
+            img.src = e.target.result;
+            preview.appendChild(img);
+          };
+        })(f);
+        reader.readAsDataURL(f);
       }
     }
-
-    preview.appendChild(fragment);
   }
 
   avatarChooser.addEventListener('change', function () {
