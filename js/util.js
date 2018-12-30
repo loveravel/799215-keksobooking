@@ -17,6 +17,7 @@
       filterList.push(document.querySelectorAll('.ad-form__element textarea'));
       filterList.push(document.querySelectorAll('.map__filters select'));
       filterList.push(document.querySelectorAll('.map__filters input'));
+      filterList.push(document.querySelectorAll('.ad-form__element button'));
       return filterList;
     },
     disableFilterList: function (bool) {
