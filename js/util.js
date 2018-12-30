@@ -29,7 +29,7 @@
     },
     autoCompleteAddress: function (element, width, height) {
       var inputAddress = document.querySelector('#address');
-      inputAddress.disabled = true;
+      inputAddress.readOnly = true;
       inputAddress.value = (+element.style.left.substr(0, element.style.left.length - 2) + width / 2)
         + ', ' + (+element.style.top.substr(0, element.style.top.length - 2) + height);
     },
