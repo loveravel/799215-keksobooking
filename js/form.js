@@ -118,6 +118,16 @@
     timein.value = timeout.value;
   });
 
+  var title = document.querySelector('#title');
+
+  title.addEventListener('change', function () {
+    if (title.value.length < title.getAttribute('minlength')) {
+      title.setCustomValidity('Минимальное количество символов: ' + title.getAttribute('minlength'));
+    } else {
+      title.setCustomValidity('');
+    }
+  });
+
   function closeSuccess(element) {
     document.body.removeChild(element);
     window.map.reset();
