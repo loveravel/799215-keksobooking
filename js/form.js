@@ -6,36 +6,40 @@
   var form = document.querySelector('.ad-form');
 
   var avatarChooser = document.querySelector('.ad-form-header__input');
-  var avatarPreview = document.querySelector('.ad-form-header__preview img');
+  var avatarPreview = document.querySelector('.ad-form-header__preview');
 
   var photoListChooser = document.querySelector('.ad-form__input');
   var photoListPreview = document.querySelector('.ad-form__photo');
 
-  function showPreviewPhotos(chooser, preview, amount) {
-    if (amount === 1) {
-      var file = chooser.files[0];
-    } else {
-      file = chooser.files;
-    }
-
-    var fileName = file.name.toLowerCase();
-    var matches = FILE_TYPES.some(function (it) {
-      return fileName.endsWith(it);
-    });
-
-    if (matches) {
-      var reader = new FileReader();
-
-      reader.addEventListener('load', function () {
-        avatarPreview.src = reader.result;
+  function showPreviewPhotos(chooser, preview) {
+    var fragment = document.createDocumentFragment();
+    for (var i = 0; i < chooser.files.length; i++) {
+      var file = chooser.files[i];
+      var fileName = file.name.toLowerCase();
+      var matches = FILE_TYPES.some(function (it) {
+        return fileName.endsWith(it);
       });
 
-      reader.readAsDataURL(file);
+      if (matches) {
+        var img = document.createElement('img');
+        img.file = file;
+        img.style = 'width: 60px; height: 60px; border-radius: 5px; margin: 5px;';
+        var reader = new FileReader();
+        reader.addEventListener('load', function () {
+          img.src = reader.result;
+        });
+        reader.readAsDataURL(file);
+        fragment.appendChild(img);
+      }
     }
+
+    preview.appendChild(fragment);
   }
 
   avatarChooser.addEventListener('change', function () {
-    showPreviewPhotos(avatarChooser, avatarPreview, 1);
+    avatarPreview.innerHTML = '';
+    avatarPreview.style = 'display: flex; justify-content: center; padding: 0; min-width: 70px;';
+    showPreviewPhotos(avatarChooser, avatarPreview);
   });
 
   photoListChooser.addEventListener('change', function () {
