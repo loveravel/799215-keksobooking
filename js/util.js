@@ -9,6 +9,7 @@
     FORM: document.querySelector('.ad-form'),
     ESC_KEYCODE: 27,
     DEBOUNCE_INTERVAL: 500,
+    PATH_TO_DEFAULT_AVATAR: 'img/avatars/default.png',
     getFilterList: function () {
       var filterList = [];
       filterList.push(document.querySelectorAll('.ad-form-header input'));

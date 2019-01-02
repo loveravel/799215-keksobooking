@@ -10,7 +10,11 @@
     if (offer) {
       var cardElement = cardTemplate.cloneNode(true);
       cardElement.classList.add('hidden');
-      cardElement.querySelector('.popup__avatar').src = author.avatar;
+      if (author) {
+        cardElement.querySelector('img').src = author.avatar;
+      } else {
+        cardElement.querySelector('img').src = window.util.PATH_TO_DEFAULT_AVATAR;
+      }
       cardElement.querySelector('.popup__title').textContent = offer.title;
       cardElement.querySelector('.popup__text--address').textContent = offer.address;
       cardElement.querySelector('.popup__text--price').textContent = offer.price + ' ₽/ночь';
