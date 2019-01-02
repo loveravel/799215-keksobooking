@@ -5,10 +5,10 @@
     ELEMENT: document.querySelector('.map__pin--main'),
     WIDTH: 60,
     HEIGHT: 80,
-    MIN_X: -30,
-    MIN_Y: 130,
-    MAX_X: 1170,
-    MAX_Y: 630
+    MIN_X: 0 - 30,
+    MIN_Y: 130 - 80,
+    MAX_X: 1200 - 30,
+    MAX_Y: 630 - 80
   };
 
   var MapFilter = {
