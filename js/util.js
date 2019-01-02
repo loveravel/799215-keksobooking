@@ -13,14 +13,15 @@
       var filterList = [];
       filterList.push(document.querySelectorAll('.ad-form-header input'));
       filterList.push(document.querySelectorAll('.ad-form__element select'));
-      filterList.push(document.querySelectorAll('.ad-form__element input'));
+      filterList.push(document.querySelectorAll('.ad-form__element input:not(#address)'));
       filterList.push(document.querySelectorAll('.ad-form__element textarea'));
       filterList.push(document.querySelectorAll('.map__filters select'));
       filterList.push(document.querySelectorAll('.map__filters input'));
+      filterList.push(document.querySelectorAll('.ad-form__element button'));
       return filterList;
     },
     disableFilterList: function (bool) {
-      var filterList = window.util.getFilterList();
+      var filterList = this.getFilterList();
       for (var i = 0; i < filterList.length; i++) {
         for (var j = 0; j < filterList[i].length; j++) {
           filterList[i][j].disabled = bool;
@@ -29,7 +30,7 @@
     },
     autoCompleteAddress: function (element, width, height) {
       var inputAddress = document.querySelector('#address');
-      inputAddress.disabled = true;
+      inputAddress.readOnly = true;
       inputAddress.value = (+element.style.left.substr(0, element.style.left.length - 2) + width / 2)
         + ', ' + (+element.style.top.substr(0, element.style.top.length - 2) + height);
     },

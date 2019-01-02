@@ -8,9 +8,9 @@
     ELEMENT: document.querySelector('.map__pin--main'),
     WIDTH: 60,
     HEIGHT: 80,
-    MIN_X: 0,
+    MIN_X: -30,
     MIN_Y: 130,
-    MAX_X: 1200,
+    MAX_X: 1170,
     MAX_Y: 630
   };
 
@@ -181,7 +181,7 @@
       var cardListAfterRender = document.querySelectorAll('.map__card');
       var closeCardButtonList = document.querySelectorAll('.popup__close');
 
-      for (var i = 0; i < pinListAfterRender.length; i++) {
+      for (i = 0; i < pinListAfterRender.length; i++) {
         onPinClick(pinListAfterRender[i], cardListAfterRender[i], closeCardButtonList[i]);
       }
     }
@@ -206,44 +206,58 @@
       y: evt.clientY
     };
 
+    function getElementBox(element) {
+      return {
+        left: element.offsetLeft,
+        right: element.offsetLeft + element.offsetWidth
+      };
+    }
+
+    function checkCursorPosition(posX, posY, element) {
+      var elementBox = getElementBox(element);
+      return posX > elementBox.left && posY > MainPin.MIN_Y && posX < elementBox.right && posY < MainPin.MAX_Y;
+    }
+
     var onMouseMove = function (moveEvt) {
-      moveEvt.preventDefault();
+      if (checkCursorPosition(moveEvt.clientX, moveEvt.clientY, window.util.MAP)) {
+        moveEvt.preventDefault();
 
-      var limits = {
-        top: MainPin.MIN_Y,
-        left: MainPin.MIN_X,
-        bottom: MainPin.MAX_Y,
-        right: MainPin.MAX_X
-      };
+        var limits = {
+          top: MainPin.MIN_Y,
+          left: MainPin.MIN_X,
+          bottom: MainPin.MAX_Y,
+          right: MainPin.MAX_X
+        };
 
-      var shift = {
-        x: startCoordinateList.x - moveEvt.clientX,
-        y: startCoordinateList.y - moveEvt.clientY
-      };
+        var shift = {
+          x: startCoordinateList.x - moveEvt.clientX,
+          y: startCoordinateList.y - moveEvt.clientY
+        };
 
-      startCoordinateList = {
-        x: moveEvt.clientX,
-        y: moveEvt.clientY
-      };
+        startCoordinateList = {
+          x: moveEvt.clientX,
+          y: moveEvt.clientY
+        };
 
-      var mainPinTop = MainPin.ELEMENT.offsetTop - shift.y;
-      var mainPinLeft = MainPin.ELEMENT.offsetLeft - shift.x;
+        var mainPinTop = MainPin.ELEMENT.offsetTop - shift.y;
+        var mainPinLeft = MainPin.ELEMENT.offsetLeft - shift.x;
 
-      if (mainPinLeft < limits.left) {
-        mainPinLeft = limits.left;
-      } else if (mainPinLeft > limits.right) {
-        mainPinLeft = limits.right;
+        if (mainPinLeft < limits.left) {
+          mainPinLeft = limits.left;
+        } else if (mainPinLeft > limits.right) {
+          mainPinLeft = limits.right;
+        }
+
+        if (mainPinTop < limits.top) {
+          mainPinTop = limits.top;
+        } else if (mainPinTop > limits.bottom) {
+          mainPinTop = limits.bottom;
+        }
+
+        MainPin.ELEMENT.style.top = mainPinTop + 'px';
+        MainPin.ELEMENT.style.left = mainPinLeft + 'px';
+        window.util.autoCompleteAddress(MainPin.ELEMENT, MainPin.WIDTH, MainPin.HEIGHT);
       }
-
-      if (mainPinTop < limits.top) {
-        mainPinTop = limits.top;
-      } else if (mainPinTop > limits.bottom) {
-        mainPinTop = limits.bottom;
-      }
-
-      MainPin.ELEMENT.style.top = mainPinTop + 'px';
-      MainPin.ELEMENT.style.left = mainPinLeft + 'px';
-      window.util.autoCompleteAddress(MainPin.ELEMENT, MainPin.WIDTH, MainPin.HEIGHT);
     };
 
     var onMouseUp = function (upEvt) {

@@ -2,6 +2,42 @@
 
 (function () {
   var form = document.querySelector('.ad-form');
+
+  var avatarChooser = document.querySelector('.ad-form-header__input');
+  var avatarPreview = document.querySelector('.ad-form-header__preview');
+
+  var photoListChooser = document.querySelector('.ad-form__input');
+  var photoListPreview = document.querySelector('.ad-form__photo');
+
+  function showPreviewPhotos(chooser, preview) {
+    var files = chooser.files;
+    for (var i = 0, f; i < files.length; i++) {
+      f = files[i];
+      if (f.type.match('image.*')) {
+        var reader = new FileReader();
+        reader.onload = (function () {
+          return function (e) {
+            var img = document.createElement('img');
+            img.style = 'width: 60px; height: 60px; border-radius: 5px; margin: 5px;';
+            img.src = e.target.result;
+            preview.appendChild(img);
+          };
+        })(f);
+        reader.readAsDataURL(f);
+      }
+    }
+  }
+
+  avatarChooser.addEventListener('change', function () {
+    avatarPreview.innerHTML = '';
+    avatarPreview.style = 'display: flex; justify-content: center; padding: 0; min-width: 70px;';
+    showPreviewPhotos(avatarChooser, avatarPreview);
+  });
+
+  photoListChooser.addEventListener('change', function () {
+    showPreviewPhotos(photoListChooser, photoListPreview);
+  });
+
   var numberOfRoomField = document.querySelector('#room_number');
   var numberOfGuestField = document.querySelector('#capacity');
 
@@ -71,6 +107,27 @@
     validateTypeAndPrice();
   });
 
+  var timein = document.querySelector('#timein');
+  var timeout = document.querySelector('#timeout');
+
+  timein.addEventListener('change', function () {
+    timeout.value = timein.value;
+  });
+
+  timeout.addEventListener('change', function () {
+    timein.value = timeout.value;
+  });
+
+  var title = document.querySelector('#title');
+
+  title.addEventListener('change', function () {
+    if (title.value.length < title.getAttribute('minlength')) {
+      title.setCustomValidity('Минимальное количество символов: ' + title.getAttribute('minlength'));
+    } else {
+      title.setCustomValidity('');
+    }
+  });
+
   function closeSuccess(element) {
     document.body.removeChild(element);
     window.map.reset();
@@ -86,7 +143,13 @@
   }
 
   form.addEventListener('submit', function (evt) {
-    window.backend.upload(new FormData(form), onSuccess, window.backend.onError);
     evt.preventDefault();
+    window.backend.upload(new FormData(form), onSuccess, window.backend.onError);
+  });
+
+  var buttonFormReset = document.querySelector('.ad-form__reset');
+  buttonFormReset.addEventListener('click', function (resetEvt) {
+    resetEvt.preventDefault();
+    window.map.reset();
   });
 })();
