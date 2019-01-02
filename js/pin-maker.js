@@ -1,7 +1,5 @@
 'use strict';
 
-// Отвечает за создание меток для карты
-
 (function () {
   var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 

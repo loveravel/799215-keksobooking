@@ -1,7 +1,5 @@
 'use strict';
 
-// Отвечает за создание карт объявлений для карты
-
 (function () {
   var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 

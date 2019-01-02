@@ -1,8 +1,5 @@
 'use strict';
 
-// Отвечает за отрисовку меток и карт объявлений на карте
-// Получает данные от cardMaker и pinMaker
-
 (function () {
   var MainPin = {
     ELEMENT: document.querySelector('.map__pin--main'),
