@@ -114,15 +114,15 @@
     validateTypeAndPrice();
   });
 
-  var timein = document.querySelector('#timein');
-  var timeout = document.querySelector('#timeout');
+  var timeIn = document.querySelector('#timein');
+  var timeOut = document.querySelector('#timeout');
 
-  timein.addEventListener('change', function () {
-    timeout.value = timein.value;
+  timeIn.addEventListener('change', function () {
+    timeOut.value = timeIn.value;
   });
 
-  timeout.addEventListener('change', function () {
-    timein.value = timeout.value;
+  timeOut.addEventListener('change', function () {
+    timeIn.value = timeOut.value;
   });
 
   var title = document.querySelector('#title');
