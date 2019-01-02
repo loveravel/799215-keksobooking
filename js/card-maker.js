@@ -43,9 +43,8 @@
         cardElement.querySelector('.popup__photos').appendChild(photoElement);
       }
       return cardElement;
-    } else {
-      return 0;
     }
+    return 0;
   }
 
   window.cardMaker = function (data) {
