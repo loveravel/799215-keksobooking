@@ -31,7 +31,8 @@
     },
     autoCompleteAddress: function (element, width, height) {
       var inputAddress = document.querySelector('#address');
-      inputAddress.readOnly = true;
+      inputAddress.disabled = true;
+      inputAddress.readOnly = false;
       inputAddress.value = (+element.style.left.substr(0, element.style.left.length - 2) + width / 2)
         + ', ' + (+element.style.top.substr(0, element.style.top.length - 2) + height);
     },

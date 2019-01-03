@@ -149,8 +149,12 @@
     }, 3000);
   }
 
+  var address = document.querySelector('#address');
+
   form.addEventListener('submit', function (evt) {
     evt.preventDefault();
+    address.disabled = false;
+    address.readOnly = true;
     window.backend.upload(new FormData(form), onSuccess, window.backend.onError);
   });
 
