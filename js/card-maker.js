@@ -4,17 +4,13 @@
   var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 
   function makeCard(card) {
-    var author = card.author ? card.author : false;
     var offer = card.offer ? card.offer : false;
 
     if (offer) {
       var cardElement = cardTemplate.cloneNode(true);
       cardElement.classList.add('hidden');
-      if (author) {
-        cardElement.querySelector('img').src = author.avatar;
-      } else {
-        cardElement.querySelector('img').src = window.util.PATH_TO_DEFAULT_AVATAR;
-      }
+      var avatar = card.author ? card.author.avatar : window.util.PATH_TO_DEFAULT_AVATAR;
+      cardElement.querySelector('img').src = avatar;
       cardElement.querySelector('.popup__title').textContent = offer.title;
       cardElement.querySelector('.popup__text--address').textContent = offer.address;
       cardElement.querySelector('.popup__text--price').textContent = offer.price + ' ₽/ночь';
