@@ -199,8 +199,8 @@
     evt.preventDefault();
 
     var startCoordinateList = {
-      x: evt.clientX,
-      y: evt.clientY
+      x: evt.pageX,
+      y: evt.pageY
     };
 
     function getElementBox(element) {
@@ -216,7 +216,7 @@
     }
 
     var onMouseMove = function (moveEvt) {
-      if (checkCursorPosition(moveEvt.clientX, moveEvt.clientY, window.util.MAP)) {
+      if (checkCursorPosition(moveEvt.pageX, moveEvt.pageY, window.util.MAP)) {
         moveEvt.preventDefault();
 
         var limits = {
@@ -227,13 +227,13 @@
         };
 
         var shift = {
-          x: startCoordinateList.x - moveEvt.clientX,
-          y: startCoordinateList.y - moveEvt.clientY
+          x: startCoordinateList.x - moveEvt.pageX,
+          y: startCoordinateList.y - moveEvt.pageY
         };
 
         startCoordinateList = {
-          x: moveEvt.clientX,
-          y: moveEvt.clientY
+          x: moveEvt.pageX,
+          y: moveEvt.pageY
         };
 
         var mainPinTop = MainPin.ELEMENT.offsetTop - shift.y;
