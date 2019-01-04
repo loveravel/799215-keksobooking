@@ -8,8 +8,9 @@
 
   var photoListChooser = document.querySelector('.ad-form__input');
   var photoListPreview = document.querySelector('.ad-form__photo');
+  var photoListContainer = document.querySelector('.ad-form__photo-container');
 
-  function showPreviewPhotos(chooser, preview) {
+  function showPreviewPhotos(chooser, preview, container) {
     var files = chooser.files;
     for (var i = 0, f; i < files.length; i++) {
       f = files[i];
@@ -18,9 +19,15 @@
         reader.onload = (function () {
           return function (e) {
             var img = document.createElement('img');
-            img.style = 'width: 60px; height: 60px; border-radius: 5px; margin: 5px;';
+            img.style = 'height: 70px; border-radius: 5px; margin-right: 5px; margin-bottom: 5px;';
             img.src = e.target.result;
-            preview.appendChild(img);
+            if (container) {
+              container.insertBefore(img, preview);
+              preview.style = 'display: none;';
+            } else {
+              img.style = 'width: 70px; height: 70px; border-radius: 5px;';
+              preview.appendChild(img);
+            }
           };
         })(f);
         reader.readAsDataURL(f);
@@ -35,7 +42,7 @@
   });
 
   photoListChooser.addEventListener('change', function () {
-    showPreviewPhotos(photoListChooser, photoListPreview);
+    showPreviewPhotos(photoListChooser, photoListPreview, photoListContainer);
   });
 
   var numberOfRoomField = document.querySelector('#room_number');
@@ -107,15 +114,15 @@
     validateTypeAndPrice();
   });
 
-  var timein = document.querySelector('#timein');
-  var timeout = document.querySelector('#timeout');
+  var timeIn = document.querySelector('#timein');
+  var timeOut = document.querySelector('#timeout');
 
-  timein.addEventListener('change', function () {
-    timeout.value = timein.value;
+  timeIn.addEventListener('change', function () {
+    timeOut.value = timeIn.value;
   });
 
-  timeout.addEventListener('change', function () {
-    timein.value = timeout.value;
+  timeOut.addEventListener('change', function () {
+    timeIn.value = timeOut.value;
   });
 
   var title = document.querySelector('#title');
@@ -142,8 +149,12 @@
     }, 3000);
   }
 
+  var address = document.querySelector('#address');
+
   form.addEventListener('submit', function (evt) {
     evt.preventDefault();
+    address.disabled = false;
+    address.readOnly = true;
     window.backend.upload(new FormData(form), onSuccess, window.backend.onError);
   });
 

@@ -9,6 +9,7 @@
     FORM: document.querySelector('.ad-form'),
     ESC_KEYCODE: 27,
     DEBOUNCE_INTERVAL: 500,
+    PATH_TO_DEFAULT_AVATAR: 'img/avatars/default.png',
     getFilterList: function () {
       var filterList = [];
       filterList.push(document.querySelectorAll('.ad-form-header input'));
@@ -30,7 +31,8 @@
     },
     autoCompleteAddress: function (element, width, height) {
       var inputAddress = document.querySelector('#address');
-      inputAddress.readOnly = true;
+      inputAddress.disabled = true;
+      inputAddress.readOnly = false;
       inputAddress.value = (+element.style.left.substr(0, element.style.left.length - 2) + width / 2)
         + ', ' + (+element.style.top.substr(0, element.style.top.length - 2) + height);
     },
