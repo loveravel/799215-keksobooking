@@ -203,20 +203,16 @@
       y: evt.pageY
     };
 
-    function getElementBox(element) {
-      return {
-        left: element.offsetLeft,
-        right: element.offsetLeft + element.offsetWidth
-      };
-    }
-
-    function checkCursorPosition(posX, posY, element) {
-      var elementBox = getElementBox(element);
-      return posX > elementBox.left && posY > MainPin.MIN_Y && posX < elementBox.right && posY < MainPin.MAX_Y;
-    }
-
     var onMouseMove = function (moveEvt) {
-      if (checkCursorPosition(moveEvt.pageX, moveEvt.pageY, window.util.MAP)) {
+      var mapBox = window.util.MAP.getBoundingClientRect();
+      var pinBox = window.util.MAIN_PIN.getBoundingClientRect();
+      var differenceX = moveEvt.pageX - pinBox.x;
+      var differenceY = moveEvt.pageY - pinBox.y;
+      console.log(differenceX, differenceY);
+      if (mapBox.left < moveEvt.pageX - differenceX + MainPin.WIDTH / 2 + pageXOffset &&
+        mapBox.right > moveEvt.pageX - differenceX + MainPin.WIDTH / 2 + pageXOffset &&
+        MainPin.MIN_Y < moveEvt.pageY - differenceY + pageYOffset &&
+        MainPin.MAX_Y > moveEvt.pageY - differenceY + pageYOffset) {
         moveEvt.preventDefault();
 
         var limits = {
@@ -276,15 +272,8 @@
       window.util.FORM.classList.add('ad-form--disabled');
       MainPin.ELEMENT.style.top = 375 + 'px';
       MainPin.ELEMENT.style.left = 570 + 'px';
+      window.util.FORM.reset();
       window.util.autoCompleteAddress(MainPin.ELEMENT, MainPin.WIDTH, MainPin.HEIGHT);
-      document.querySelector('#title').value = '';
-      document.querySelector('#price').value = '';
-      document.querySelector('#type').value = 'flat';
-      document.querySelector('#timein').value = '12:00';
-      document.querySelector('#timeout').value = '12:00';
-      document.querySelector('#room_number').value = '1';
-      document.querySelector('#capacity').value = '1';
-      document.querySelector('#description').value = '';
       window.util.clearMap();
     },
     renderElements: function (notice) {
