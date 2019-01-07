@@ -1,6 +1,8 @@
 'use strict';
 
 (function () {
+  var MAP_BOX = window.util.MAP.getBoundingClientRect();
+
   var MainPin = {
     ELEMENT: document.querySelector('.map__pin--main'),
     WIDTH: 60,
@@ -204,53 +206,35 @@
     };
 
     var onMouseMove = function (moveEvt) {
-      var mapBox = window.util.MAP.getBoundingClientRect();
-      var pinBox = window.util.MAIN_PIN.getBoundingClientRect();
-      var differenceX = moveEvt.pageX - pinBox.x;
-      var differenceY = moveEvt.pageY - pinBox.y;
-      console.log(differenceX, differenceY);
-      if (mapBox.left < moveEvt.pageX - differenceX + MainPin.WIDTH / 2 + pageXOffset &&
-        mapBox.right > moveEvt.pageX - differenceX + MainPin.WIDTH / 2 + pageXOffset &&
-        MainPin.MIN_Y < moveEvt.pageY - differenceY + pageYOffset &&
-        MainPin.MAX_Y > moveEvt.pageY - differenceY + pageYOffset) {
-        moveEvt.preventDefault();
+      var shift = {
+        x: startCoordinateList.x - moveEvt.pageX,
+        y: startCoordinateList.y - moveEvt.pageY
+      };
 
-        var limits = {
-          top: MainPin.MIN_Y,
-          left: MainPin.MIN_X,
-          bottom: MainPin.MAX_Y,
-          right: MainPin.MAX_X
-        };
+      startCoordinateList = {
+        x: moveEvt.pageX,
+        y: moveEvt.pageY
+      };
 
-        var shift = {
-          x: startCoordinateList.x - moveEvt.pageX,
-          y: startCoordinateList.y - moveEvt.pageY
-        };
+      var mainPinTop = MainPin.ELEMENT.offsetTop - shift.y;
+      var mainPinLeft = MainPin.ELEMENT.offsetLeft - shift.x;
 
-        startCoordinateList = {
-          x: moveEvt.pageX,
-          y: moveEvt.pageY
-        };
-
-        var mainPinTop = MainPin.ELEMENT.offsetTop - shift.y;
-        var mainPinLeft = MainPin.ELEMENT.offsetLeft - shift.x;
-
-        if (mainPinLeft < limits.left) {
-          mainPinLeft = limits.left;
-        } else if (mainPinLeft > limits.right) {
-          mainPinLeft = limits.right;
-        }
-
-        if (mainPinTop < limits.top) {
-          mainPinTop = limits.top;
-        } else if (mainPinTop > limits.bottom) {
-          mainPinTop = limits.bottom;
-        }
-
-        MainPin.ELEMENT.style.top = mainPinTop + 'px';
-        MainPin.ELEMENT.style.left = mainPinLeft + 'px';
-        window.util.autoCompleteAddress(MainPin.ELEMENT, MainPin.WIDTH, MainPin.HEIGHT);
+      if (moveEvt.pageX < MAP_BOX.left || mainPinLeft < MainPin.MIN_X) {
+        mainPinLeft = MainPin.MIN_X;
+      } else if (moveEvt.pageX > MAP_BOX.right || mainPinLeft > MainPin.MAX_X) {
+        mainPinLeft = MainPin.MAX_X;
       }
+
+      if (moveEvt.pageY < MainPin.MIN_Y || mainPinTop < MainPin.MIN_Y) {
+        mainPinTop = MainPin.MIN_Y;
+      } else if (moveEvt.pageY > MainPin.MAX_Y || mainPinTop > MainPin.MAX_Y) {
+        mainPinTop = MainPin.MAX_Y;
+      }
+
+      MainPin.ELEMENT.style.top = mainPinTop + 'px';
+      MainPin.ELEMENT.style.left = mainPinLeft + 'px';
+      window.util.autoCompleteAddress(MainPin.ELEMENT, MainPin.WIDTH, MainPin.HEIGHT);
+
     };
 
     var onMouseUp = function (upEvt) {
