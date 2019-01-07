@@ -31,7 +31,7 @@
 
   var noticeList = [];
 
-  var onLoad = function (data) {
+  function onLoad(data) {
     noticeList = data;
 
     window.map.renderElements(noticeList);
@@ -137,7 +137,7 @@
       });
     }
 
-    var onPinClick = function (pin, card, closeCardButton) {
+    function onPinClick(pin, card, closeCardButton) {
       pin.addEventListener('click', function () {
         checkOpenedCard();
         pin.classList.add('map__pin--active');
@@ -145,35 +145,35 @@
         onCloseCardButtonClick(pin, card, closeCardButton);
         onCardEscPress(pin, card);
       });
-    };
+    }
 
-    var closeCard = function (pin, card) {
+    function closeCard(pin, card) {
       pin.classList.remove('map__pin--active');
       card.classList.add('hidden');
       document.removeEventListener('keydown', onCardEscPress);
-    };
+    }
 
-    var onCloseCardButtonClick = function (pin, card, closeCardButton) {
+    function onCloseCardButtonClick(pin, card, closeCardButton) {
       closeCardButton.addEventListener('click', function () {
         closeCard(pin, card);
       });
-    };
+    }
 
-    var onCardEscPress = function (pin, card) {
+    function onCardEscPress(pin, card) {
       document.addEventListener('keydown', function (evt) {
         if (evt.keyCode === window.util.ESC_KEYCODE) {
           closeCard(pin, card);
         }
       });
-    };
+    }
 
-    var checkOpenedCard = function () {
+    function checkOpenedCard() {
       var activePin = document.querySelector('.map__pin--active');
       var openedCard = document.querySelector('.map__card:not(.hidden)');
       if (activePin) {
         closeCard(activePin, openedCard);
       }
-    };
+    }
 
     function makeListenerListForPinList() {
       var pinListAfterRender = document.querySelectorAll('.map__pin:not(.map__pin--main)');
@@ -186,16 +186,16 @@
     }
 
     makeListenerListForPinList();
-  };
+  }
 
-  var onMainPinClick = function () {
+  function onMainPinClick() {
     window.util.MAP.classList.remove('map--faded');
     window.util.FORM.classList.remove('ad-form--disabled');
     window.util.disableFilterList(false);
     if (document.querySelectorAll('.map__pin').length === 1) {
       window.backend.load(onLoad, window.backend.onError);
     }
-  };
+  }
 
   MainPin.ELEMENT.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
@@ -205,7 +205,7 @@
       y: evt.pageY
     };
 
-    var onMouseMove = function (moveEvt) {
+    function onMouseMove(moveEvt) {
       var shift = {
         x: startCoordinateList.x - moveEvt.pageX,
         y: startCoordinateList.y - moveEvt.pageY
@@ -235,15 +235,15 @@
       MainPin.ELEMENT.style.left = mainPinLeft + 'px';
       window.util.autoCompleteAddress(MainPin.ELEMENT, MainPin.WIDTH, MainPin.HEIGHT);
 
-    };
+    }
 
-    var onMouseUp = function (upEvt) {
+    function onMouseUp(upEvt) {
       upEvt.preventDefault();
 
       onMainPinClick();
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
-    };
+    }
 
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
