@@ -10,23 +10,13 @@
     ESC_KEYCODE: 27,
     DEBOUNCE_INTERVAL: 500,
     PATH_TO_DEFAULT_AVATAR: 'img/avatars/default.png',
-    getFilterList: function () {
-      var filterList = [];
-      filterList.push(document.querySelectorAll('.ad-form-header input'));
-      filterList.push(document.querySelectorAll('.ad-form__element select'));
-      filterList.push(document.querySelectorAll('.ad-form__element input:not(#address)'));
-      filterList.push(document.querySelectorAll('.ad-form__element textarea'));
-      filterList.push(document.querySelectorAll('.map__filters select'));
-      filterList.push(document.querySelectorAll('.map__filters input'));
-      filterList.push(document.querySelectorAll('.ad-form__element button'));
-      return filterList;
-    },
     disableFilterList: function (bool) {
-      var filterList = this.getFilterList();
+      var filterList = document.querySelectorAll('input, select, textarea');
       for (var i = 0; i < filterList.length; i++) {
-        for (var j = 0; j < filterList[i].length; j++) {
-          filterList[i][j].disabled = bool;
+        if (filterList[i].id === 'address') {
+          continue;
         }
+        filterList[i].disabled = bool;
       }
     },
     autoCompleteAddress: function (element, width, height) {
