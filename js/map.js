@@ -10,7 +10,9 @@
     MIN_X: -30,
     MIN_Y: 50,
     MAX_X: 1170,
-    MAX_Y: 550
+    MAX_Y: 550,
+    START_X: 570,
+    START_Y: 375
   };
 
   var MapFilter = {
@@ -24,6 +26,11 @@
     FEATURE_WASHER: document.querySelector('#filter-washer'),
     FEATURE_ELEVATOR: document.querySelector('#filter-elevator'),
     FEATURE_CONDITIONER: document.querySelector('#filter-conditioner')
+  };
+
+  var priceLevel = {
+    LOW: 10000,
+    HIGH: 50000
   };
 
   window.util.autoCompleteAddress(MainPin.ELEMENT, MainPin.WIDTH, MainPin.HEIGHT);
@@ -60,15 +67,15 @@
 
       if (MapFilter.HOUSING_PRICE.value === 'low') {
         updateNoticeList = updateNoticeList.filter(function (notice) {
-          return notice.offer.price < 10000;
+          return notice.offer.price < priceLevel.LOW;
         });
       } else if (MapFilter.HOUSING_PRICE.value === 'middle') {
         updateNoticeList = updateNoticeList.filter(function (notice) {
-          return notice.offer.price >= 10000 && notice.offer.price < 50000;
+          return notice.offer.price >= priceLevel.LOW && notice.offer.price < priceLevel.HIGH;
         });
       } else if (MapFilter.HOUSING_PRICE.value === 'high') {
         updateNoticeList = updateNoticeList.filter(function (notice) {
-          return notice.offer.price >= 50000;
+          return notice.offer.price >= priceLevel.HIGH;
         });
       }
 
@@ -254,8 +261,8 @@
       window.util.disableFilterList(true);
       window.util.MAP.classList.add('map--faded');
       window.util.FORM.classList.add('ad-form--disabled');
-      MainPin.ELEMENT.style.top = 375 + 'px';
-      MainPin.ELEMENT.style.left = 570 + 'px';
+      MainPin.ELEMENT.style.top = MainPin.START_Y + 'px';
+      MainPin.ELEMENT.style.left = MainPin.START_X + 'px';
       window.util.FORM.reset();
       window.util.autoCompleteAddress(MainPin.ELEMENT, MainPin.WIDTH, MainPin.HEIGHT);
       window.util.clearMap();

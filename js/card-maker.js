@@ -1,6 +1,11 @@
 'use strict';
 
 (function () {
+  var photoInCard = {
+    WIDTH: 45,
+    HEIGHT: 40
+  };
+
   var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 
   function makeCard(card) {
@@ -35,8 +40,8 @@
         var photoElement = document.createElement('img');
         photoElement.className = 'popup__photo';
         photoElement.src = offer.photos[photoIndex];
-        photoElement.width = 45;
-        photoElement.height = 40;
+        photoElement.width = photoInCard.WIDTH;
+        photoElement.height = photoInCard.HEIGHT;
         photoElement.alt = 'Фотография жилья';
         cardElement.querySelector('.popup__photos').appendChild(photoElement);
       }
