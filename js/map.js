@@ -1,6 +1,8 @@
 'use strict';
 
 (function () {
+  var MAP_BOX = window.util.MAP.getBoundingClientRect();
+
   var MainPin = {
     ELEMENT: document.querySelector('.map__pin--main'),
     WIDTH: 60,
@@ -29,7 +31,7 @@
 
   var noticeList = [];
 
-  var onLoad = function (data) {
+  function onLoad(data) {
     noticeList = data;
 
     window.map.renderElements(noticeList);
@@ -135,7 +137,7 @@
       });
     }
 
-    var onPinClick = function (pin, card, closeCardButton) {
+    function onPinClick(pin, card, closeCardButton) {
       pin.addEventListener('click', function () {
         checkOpenedCard();
         pin.classList.add('map__pin--active');
@@ -143,35 +145,35 @@
         onCloseCardButtonClick(pin, card, closeCardButton);
         onCardEscPress(pin, card);
       });
-    };
+    }
 
-    var closeCard = function (pin, card) {
+    function closeCard(pin, card) {
       pin.classList.remove('map__pin--active');
       card.classList.add('hidden');
       document.removeEventListener('keydown', onCardEscPress);
-    };
+    }
 
-    var onCloseCardButtonClick = function (pin, card, closeCardButton) {
+    function onCloseCardButtonClick(pin, card, closeCardButton) {
       closeCardButton.addEventListener('click', function () {
         closeCard(pin, card);
       });
-    };
+    }
 
-    var onCardEscPress = function (pin, card) {
+    function onCardEscPress(pin, card) {
       document.addEventListener('keydown', function (evt) {
         if (evt.keyCode === window.util.ESC_KEYCODE) {
           closeCard(pin, card);
         }
       });
-    };
+    }
 
-    var checkOpenedCard = function () {
+    function checkOpenedCard() {
       var activePin = document.querySelector('.map__pin--active');
       var openedCard = document.querySelector('.map__card:not(.hidden)');
       if (activePin) {
         closeCard(activePin, openedCard);
       }
-    };
+    }
 
     function makeListenerListForPinList() {
       var pinListAfterRender = document.querySelectorAll('.map__pin:not(.map__pin--main)');
@@ -184,16 +186,16 @@
     }
 
     makeListenerListForPinList();
-  };
+  }
 
-  var onMainPinClick = function () {
+  function onMainPinClick() {
     window.util.MAP.classList.remove('map--faded');
     window.util.FORM.classList.remove('ad-form--disabled');
     window.util.disableFilterList(false);
     if (document.querySelectorAll('.map__pin').length === 1) {
       window.backend.load(onLoad, window.backend.onError);
     }
-  };
+  }
 
   MainPin.ELEMENT.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
@@ -203,67 +205,45 @@
       y: evt.pageY
     };
 
-    function getElementBox(element) {
-      return {
-        left: element.offsetLeft,
-        right: element.offsetLeft + element.offsetWidth
+    function onMouseMove(moveEvt) {
+      var shift = {
+        x: startCoordinateList.x - moveEvt.pageX,
+        y: startCoordinateList.y - moveEvt.pageY
       };
-    }
 
-    function checkCursorPosition(posX, posY, element) {
-      var elementBox = getElementBox(element);
-      return posX > elementBox.left && posY > MainPin.MIN_Y && posX < elementBox.right && posY < MainPin.MAX_Y;
-    }
+      startCoordinateList = {
+        x: moveEvt.pageX,
+        y: moveEvt.pageY
+      };
 
-    var onMouseMove = function (moveEvt) {
-      if (checkCursorPosition(moveEvt.pageX, moveEvt.pageY, window.util.MAP)) {
-        moveEvt.preventDefault();
+      var mainPinTop = MainPin.ELEMENT.offsetTop - shift.y;
+      var mainPinLeft = MainPin.ELEMENT.offsetLeft - shift.x;
 
-        var limits = {
-          top: MainPin.MIN_Y,
-          left: MainPin.MIN_X,
-          bottom: MainPin.MAX_Y,
-          right: MainPin.MAX_X
-        };
-
-        var shift = {
-          x: startCoordinateList.x - moveEvt.pageX,
-          y: startCoordinateList.y - moveEvt.pageY
-        };
-
-        startCoordinateList = {
-          x: moveEvt.pageX,
-          y: moveEvt.pageY
-        };
-
-        var mainPinTop = MainPin.ELEMENT.offsetTop - shift.y;
-        var mainPinLeft = MainPin.ELEMENT.offsetLeft - shift.x;
-
-        if (mainPinLeft < limits.left) {
-          mainPinLeft = limits.left;
-        } else if (mainPinLeft > limits.right) {
-          mainPinLeft = limits.right;
-        }
-
-        if (mainPinTop < limits.top) {
-          mainPinTop = limits.top;
-        } else if (mainPinTop > limits.bottom) {
-          mainPinTop = limits.bottom;
-        }
-
-        MainPin.ELEMENT.style.top = mainPinTop + 'px';
-        MainPin.ELEMENT.style.left = mainPinLeft + 'px';
-        window.util.autoCompleteAddress(MainPin.ELEMENT, MainPin.WIDTH, MainPin.HEIGHT);
+      if (moveEvt.pageX < MAP_BOX.left || mainPinLeft < MainPin.MIN_X) {
+        mainPinLeft = MainPin.MIN_X;
+      } else if (moveEvt.pageX > MAP_BOX.right || mainPinLeft > MainPin.MAX_X) {
+        mainPinLeft = MainPin.MAX_X;
       }
-    };
 
-    var onMouseUp = function (upEvt) {
+      if (moveEvt.pageY < MainPin.MIN_Y || mainPinTop < MainPin.MIN_Y) {
+        mainPinTop = MainPin.MIN_Y;
+      } else if (moveEvt.pageY > MainPin.MAX_Y || mainPinTop > MainPin.MAX_Y) {
+        mainPinTop = MainPin.MAX_Y;
+      }
+
+      MainPin.ELEMENT.style.top = mainPinTop + 'px';
+      MainPin.ELEMENT.style.left = mainPinLeft + 'px';
+      window.util.autoCompleteAddress(MainPin.ELEMENT, MainPin.WIDTH, MainPin.HEIGHT);
+
+    }
+
+    function onMouseUp(upEvt) {
       upEvt.preventDefault();
 
       onMainPinClick();
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
-    };
+    }
 
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
@@ -276,15 +256,8 @@
       window.util.FORM.classList.add('ad-form--disabled');
       MainPin.ELEMENT.style.top = 375 + 'px';
       MainPin.ELEMENT.style.left = 570 + 'px';
+      window.util.FORM.reset();
       window.util.autoCompleteAddress(MainPin.ELEMENT, MainPin.WIDTH, MainPin.HEIGHT);
-      document.querySelector('#title').value = '';
-      document.querySelector('#price').value = '';
-      document.querySelector('#type').value = 'flat';
-      document.querySelector('#timein').value = '12:00';
-      document.querySelector('#timeout').value = '12:00';
-      document.querySelector('#room_number').value = '1';
-      document.querySelector('#capacity').value = '1';
-      document.querySelector('#description').value = '';
       window.util.clearMap();
     },
     renderElements: function (notice) {
