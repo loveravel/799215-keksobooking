@@ -21,13 +21,7 @@
     HOUSING_PRICE: document.querySelector('#housing-price'),
     HOUSING_ROOMS: document.querySelector('#housing-rooms'),
     HOUSING_GUESTS: document.querySelector('#housing-guests'),
-    FEATURE_LIST: document.querySelectorAll('.map__feature'),
-    FEATURE_WIFI: document.querySelector('#filter-wifi'),
-    FEATURE_DISHWASHER: document.querySelector('#filter-dishwasher'),
-    FEATURE_PARKING: document.querySelector('#filter-parking'),
-    FEATURE_WASHER: document.querySelector('#filter-washer'),
-    FEATURE_ELEVATOR: document.querySelector('#filter-elevator'),
-    FEATURE_CONDITIONER: document.querySelector('#filter-conditioner')
+    FEATURE_LIST: document.querySelectorAll('.map__features input'),
   };
 
   var priceLevel = {
@@ -92,40 +86,16 @@
         return bool;
       }
 
-      if (MapFilter.FEATURE_WIFI.checked) {
-        updateNoticeList = updateNoticeList.filter(function (notice) {
-          return doFeatureFilter(notice, 'wifi');
-        });
+      function checkFeatureFilter(feature, featureId) {
+        if (feature.checked) {
+          updateNoticeList = updateNoticeList.filter(function (notice) {
+            return doFeatureFilter(notice, featureId);
+          });
+        }
       }
 
-      if (MapFilter.FEATURE_DISHWASHER.checked) {
-        updateNoticeList = updateNoticeList.filter(function (notice) {
-          return doFeatureFilter(notice, 'dishwasher');
-        });
-      }
-
-      if (MapFilter.FEATURE_PARKING.checked) {
-        updateNoticeList = updateNoticeList.filter(function (notice) {
-          return doFeatureFilter(notice, 'parking');
-        });
-      }
-
-      if (MapFilter.FEATURE_WASHER.checked) {
-        updateNoticeList = updateNoticeList.filter(function (notice) {
-          return doFeatureFilter(notice, 'washer');
-        });
-      }
-
-      if (MapFilter.FEATURE_ELEVATOR.checked) {
-        updateNoticeList = updateNoticeList.filter(function (notice) {
-          return doFeatureFilter(notice, 'elevator');
-        });
-      }
-
-      if (MapFilter.FEATURE_CONDITIONER.checked) {
-        updateNoticeList = updateNoticeList.filter(function (notice) {
-          return doFeatureFilter(notice, 'conditioner');
-        });
+      for (var i = 0; i < MapFilter.FEATURE_LIST.length; i++) {
+        checkFeatureFilter(MapFilter.FEATURE_LIST[i], MapFilter.FEATURE_LIST[i].value);
       }
 
       if (updateNoticeList) {
