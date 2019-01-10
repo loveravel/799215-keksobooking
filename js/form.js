@@ -23,20 +23,18 @@
       f = files[i];
       if (f.type.match('image.*')) {
         var reader = new FileReader();
-        reader.onload = (function () {
-          return function (e) {
-            var img = document.createElement('img');
-            img.style = 'height: 70px; border-radius: 5px; margin-right: 5px; margin-bottom: 5px;';
-            img.src = e.target.result;
-            if (container) {
-              container.insertBefore(img, preview);
-              preview.style = 'display: none;';
-            } else {
-              img.style = 'width: 70px; height: 70px; border-radius: 5px;';
-              preview.appendChild(img);
-            }
-          };
-        })(f);
+        reader.addEventListener('load', function (e) {
+          var img = document.createElement('img');
+          img.style = 'height: 70px; border-radius: 5px; margin-right: 5px; margin-bottom: 5px;';
+          img.src = e.target.result;
+          if (container) {
+            container.insertBefore(img, preview);
+            preview.style = 'display: none;';
+          } else {
+            img.style = 'width: 70px; height: 70px; border-radius: 5px;';
+            preview.appendChild(img);
+          }
+        });
         reader.readAsDataURL(f);
       }
     }
