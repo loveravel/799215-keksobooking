@@ -16,10 +16,12 @@
   };
 
   var MapFilter = {
+    HOUSING_LIST: document.querySelectorAll('.map__filter'),
     HOUSING_TYPE: document.querySelector('#housing-type'),
     HOUSING_PRICE: document.querySelector('#housing-price'),
     HOUSING_ROOMS: document.querySelector('#housing-rooms'),
     HOUSING_GUESTS: document.querySelector('#housing-guests'),
+    FEATURE_LIST: document.querySelectorAll('.map__feature'),
     FEATURE_WIFI: document.querySelector('#filter-wifi'),
     FEATURE_DISHWASHER: document.querySelector('#filter-dishwasher'),
     FEATURE_PARKING: document.querySelector('#filter-parking'),
@@ -133,15 +135,15 @@
       makeListenerListForPinList();
     }
 
-    for (var i = 0; i < document.querySelectorAll('.map__feature').length; i++) {
-      document.querySelectorAll('.map__feature')[i].onclick = window.util.debounce(function () {
+    for (var i = 0; i < MapFilter.FEATURE_LIST.length; i++) {
+      MapFilter.FEATURE_LIST[i].addEventListener('click', window.util.debounce(function () {
         updateMap(noticeList);
-      });
+      }));
     }
-    for (i = 0; i < document.querySelectorAll('.map__filter').length; i++) {
-      document.querySelectorAll('.map__filter')[i].onchange = window.util.debounce(function () {
+    for (i = 0; i < MapFilter.HOUSING_LIST.length; i++) {
+      MapFilter.HOUSING_LIST[i].addEventListener('change', window.util.debounce(function () {
         updateMap(noticeList);
-      });
+      }));
     }
 
     function onPinClick(pin, card, closeCardButton) {
