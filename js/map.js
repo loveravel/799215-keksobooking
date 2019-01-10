@@ -37,7 +37,7 @@
   function onLoad(data) {
     noticeList = data;
 
-    window.map.renderElements(noticeList);
+    var elementList = window.map.renderElements(noticeList);
 
     function updateMap() {
       window.util.clearMap();
@@ -99,10 +99,10 @@
       }
 
       if (updateNoticeList) {
-        window.map.renderElements(updateNoticeList);
+        elementList = window.map.renderElements(updateNoticeList);
       }
 
-      makeListenerListForPinList();
+      makeListenerListForPinList(elementList.pinList, elementList.cardList);
     }
 
     for (var i = 0; i < MapFilter.FEATURE_LIST.length; i++) {
@@ -154,9 +154,7 @@
       }
     }
 
-    function makeListenerListForPinList() {
-      var pinListAfterRender = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-      var cardListAfterRender = document.querySelectorAll('.map__card');
+    function makeListenerListForPinList(pinListAfterRender, cardListAfterRender) {
       var closeCardButtonList = document.querySelectorAll('.popup__close');
 
       for (i = 0; i < pinListAfterRender.length; i++) {
@@ -164,7 +162,7 @@
       }
     }
 
-    makeListenerListForPinList();
+    makeListenerListForPinList(elementList.pinList, elementList.cardList);
   }
 
   function onMainPinClick() {
@@ -240,19 +238,26 @@
       window.util.clearMap();
     },
     renderElements: function (notice) {
-      var cardList = window.cardMaker(notice);
+      var elementList = {
+        pinList: [],
+        cardList: []
+      };
       var pinList = window.pinMaker(notice);
+      var cardList = window.cardMaker(notice);
       var fragment = document.createDocumentFragment();
 
       for (var i = 0; i < notice.length; i++) {
         if (i === window.util.NUMBER_OF_NOTICES) {
           break;
         }
-        fragment.appendChild(cardList[i]);
+        elementList.pinList.push(pinList[i]);
         fragment.appendChild(pinList[i]);
+        elementList.cardList.push(cardList[i]);
+        fragment.appendChild(cardList[i]);
       }
 
       window.util.MAP.insertBefore(fragment, window.util.FILTERS_CONTAINER);
+      return elementList;
     }
   };
 })();
