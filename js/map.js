@@ -32,6 +32,59 @@
   window.util.autoCompleteAddress(MainPin.ELEMENT, MainPin.WIDTH, MainPin.HEIGHT);
   window.util.disableFilterList(true);
 
+  function doHousingFilter(noticeList) {
+    if (MapFilter.HOUSING_ROOMS.value !== 'any') {
+      noticeList.filter(function (notice) {
+        return notice.offer.rooms.toString() === MapFilter.HOUSING_ROOMS.value;
+      });
+    }
+
+    if (MapFilter.HOUSING_TYPE.value !== 'any') {
+      noticeList.filter(function (notice) {
+        return notice.offer.type === MapFilter.HOUSING_TYPE.value;
+      });
+    }
+
+    if (MapFilter.HOUSING_GUESTS.value !== 'any') {
+      noticeList.filter(function (notice) {
+        return notice.offer.guests.toString() === MapFilter.HOUSING_GUESTS.value;
+      });
+    }
+
+    if (MapFilter.HOUSING_PRICE.value === 'low') {
+      noticeList.filter(function (notice) {
+        return notice.offer.price < priceLevel.LOW;
+      });
+    } else if (MapFilter.HOUSING_PRICE.value === 'middle') {
+      noticeList.filter(function (notice) {
+        return notice.offer.price >= priceLevel.LOW && notice.offer.price < priceLevel.HIGH;
+      });
+    } else if (MapFilter.HOUSING_PRICE.value === 'high') {
+      noticeList.filter(function (notice) {
+        return notice.offer.price >= priceLevel.HIGH;
+      });
+    }
+  }
+
+  function doFeatureFilter(notice, feature) {
+    var bool = false;
+    for (var i = 0; i < notice.offer.features.length; i++) {
+      bool = (notice.offer.features[i] === feature);
+      if (bool) {
+        break;
+      }
+    }
+    return bool;
+  }
+
+  function checkFeatureFilter(noticeList, feature, featureId) {
+    if (feature.checked) {
+      noticeList.filter(function (notice) {
+        return doFeatureFilter(notice, featureId);
+      });
+    }
+  }
+
   var noticeList = [];
 
   function onLoad(data) {
@@ -43,59 +96,10 @@
       window.util.clearMap();
       var updateNoticeList = noticeList;
 
-      if (MapFilter.HOUSING_ROOMS.value !== 'any') {
-        updateNoticeList = updateNoticeList.filter(function (notice) {
-          return notice.offer.rooms.toString() === MapFilter.HOUSING_ROOMS.value;
-        });
-      }
-
-      if (MapFilter.HOUSING_TYPE.value !== 'any') {
-        updateNoticeList = updateNoticeList.filter(function (notice) {
-          return notice.offer.type === MapFilter.HOUSING_TYPE.value;
-        });
-      }
-
-      if (MapFilter.HOUSING_GUESTS.value !== 'any') {
-        updateNoticeList = updateNoticeList.filter(function (notice) {
-          return notice.offer.guests.toString() === MapFilter.HOUSING_GUESTS.value;
-        });
-      }
-
-      if (MapFilter.HOUSING_PRICE.value === 'low') {
-        updateNoticeList = updateNoticeList.filter(function (notice) {
-          return notice.offer.price < priceLevel.LOW;
-        });
-      } else if (MapFilter.HOUSING_PRICE.value === 'middle') {
-        updateNoticeList = updateNoticeList.filter(function (notice) {
-          return notice.offer.price >= priceLevel.LOW && notice.offer.price < priceLevel.HIGH;
-        });
-      } else if (MapFilter.HOUSING_PRICE.value === 'high') {
-        updateNoticeList = updateNoticeList.filter(function (notice) {
-          return notice.offer.price >= priceLevel.HIGH;
-        });
-      }
-
-      function doFeatureFilter(notice, feature) {
-        var bool = false;
-        for (var i = 0; i < notice.offer.features.length; i++) {
-          bool = (notice.offer.features[i] === feature);
-          if (bool) {
-            break;
-          }
-        }
-        return bool;
-      }
-
-      function checkFeatureFilter(feature, featureId) {
-        if (feature.checked) {
-          updateNoticeList = updateNoticeList.filter(function (notice) {
-            return doFeatureFilter(notice, featureId);
-          });
-        }
-      }
+      doHousingFilter(updateNoticeList);
 
       MapFilter.FEATURE_LIST.forEach(function (item) {
-        checkFeatureFilter(item, item.value);
+        checkFeatureFilter(updateNoticeList, item, item.value);
       });
 
       if (updateNoticeList) {
