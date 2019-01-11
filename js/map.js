@@ -34,36 +34,38 @@
 
   function doHousingFilter(noticeList) {
     if (MapFilter.HOUSING_ROOMS.value !== 'any') {
-      noticeList.filter(function (notice) {
+      noticeList = noticeList.filter(function (notice) {
         return notice.offer.rooms.toString() === MapFilter.HOUSING_ROOMS.value;
       });
     }
 
     if (MapFilter.HOUSING_TYPE.value !== 'any') {
-      noticeList.filter(function (notice) {
+      noticeList = noticeList.filter(function (notice) {
         return notice.offer.type === MapFilter.HOUSING_TYPE.value;
       });
     }
 
     if (MapFilter.HOUSING_GUESTS.value !== 'any') {
-      noticeList.filter(function (notice) {
+      noticeList = noticeList.filter(function (notice) {
         return notice.offer.guests.toString() === MapFilter.HOUSING_GUESTS.value;
       });
     }
 
     if (MapFilter.HOUSING_PRICE.value === 'low') {
-      noticeList.filter(function (notice) {
+      noticeList = noticeList.filter(function (notice) {
         return notice.offer.price < priceLevel.LOW;
       });
     } else if (MapFilter.HOUSING_PRICE.value === 'middle') {
-      noticeList.filter(function (notice) {
+      noticeList = noticeList.filter(function (notice) {
         return notice.offer.price >= priceLevel.LOW && notice.offer.price < priceLevel.HIGH;
       });
     } else if (MapFilter.HOUSING_PRICE.value === 'high') {
-      noticeList.filter(function (notice) {
+      noticeList = noticeList.filter(function (notice) {
         return notice.offer.price >= priceLevel.HIGH;
       });
     }
+
+    return noticeList;
   }
 
   function doFeatureFilter(notice, feature) {
@@ -79,10 +81,12 @@
 
   function checkFeatureFilter(noticeList, feature, featureId) {
     if (feature.checked) {
-      noticeList.filter(function (notice) {
+
+      noticeList = noticeList.filter(function (notice) {
         return doFeatureFilter(notice, featureId);
       });
     }
+    return noticeList;
   }
 
   var noticeList = [];
@@ -94,12 +98,12 @@
 
     function updateMap() {
       window.util.clearMap();
-      var updateNoticeList = noticeList;
+      var updateNoticeList;
 
-      doHousingFilter(updateNoticeList);
+      updateNoticeList = doHousingFilter(noticeList);
 
       MapFilter.FEATURE_LIST.forEach(function (item) {
-        checkFeatureFilter(updateNoticeList, item, item.value);
+        updateNoticeList = checkFeatureFilter(updateNoticeList, item, item.value);
       });
 
       if (updateNoticeList) {
