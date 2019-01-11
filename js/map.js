@@ -94,9 +94,9 @@
         }
       }
 
-      for (var i = 0; i < MapFilter.FEATURE_LIST.length; i++) {
-        checkFeatureFilter(MapFilter.FEATURE_LIST[i], MapFilter.FEATURE_LIST[i].value);
-      }
+      MapFilter.FEATURE_LIST.forEach(function (item) {
+        checkFeatureFilter(item, item.value);
+      });
 
       if (updateNoticeList) {
         elementList = window.map.renderElements(updateNoticeList);
@@ -105,16 +105,16 @@
       makeListenerListForPinList(elementList.pinList, elementList.cardList);
     }
 
-    for (var i = 0; i < MapFilter.FEATURE_LIST.length; i++) {
-      MapFilter.FEATURE_LIST[i].addEventListener('click', window.util.debounce(function () {
+    MapFilter.FEATURE_LIST.forEach(function (item) {
+      item.addEventListener('click', window.util.debounce(function () {
         updateMap(noticeList);
       }));
-    }
-    for (i = 0; i < MapFilter.HOUSING_LIST.length; i++) {
-      MapFilter.HOUSING_LIST[i].addEventListener('change', window.util.debounce(function () {
+    });
+    MapFilter.HOUSING_LIST.forEach(function (item) {
+      item.addEventListener('change', window.util.debounce(function () {
         updateMap(noticeList);
       }));
-    }
+    });
 
     function onPinClick(pin, card, closeCardButton) {
       pin.addEventListener('click', function () {
@@ -157,9 +157,9 @@
     function makeListenerListForPinList(pinListAfterRender, cardListAfterRender) {
       var closeCardButtonList = document.querySelectorAll('.popup__close');
 
-      for (i = 0; i < pinListAfterRender.length; i++) {
+      pinListAfterRender.forEach(function (item, i) {
         onPinClick(pinListAfterRender[i], cardListAfterRender[i], closeCardButtonList[i]);
-      }
+      });
     }
 
     makeListenerListForPinList(elementList.pinList, elementList.cardList);
