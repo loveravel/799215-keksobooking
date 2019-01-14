@@ -10,132 +10,119 @@
     MIN_X: -30,
     MIN_Y: 50,
     MAX_X: 1170,
-    MAX_Y: 550
+    MAX_Y: 550,
+    START_X: 570,
+    START_Y: 375
   };
 
   var MapFilter = {
+    HOUSING_LIST: document.querySelectorAll('.map__filter'),
     HOUSING_TYPE: document.querySelector('#housing-type'),
     HOUSING_PRICE: document.querySelector('#housing-price'),
     HOUSING_ROOMS: document.querySelector('#housing-rooms'),
     HOUSING_GUESTS: document.querySelector('#housing-guests'),
-    FEATURE_WIFI: document.querySelector('#filter-wifi'),
-    FEATURE_DISHWASHER: document.querySelector('#filter-dishwasher'),
-    FEATURE_PARKING: document.querySelector('#filter-parking'),
-    FEATURE_WASHER: document.querySelector('#filter-washer'),
-    FEATURE_ELEVATOR: document.querySelector('#filter-elevator'),
-    FEATURE_CONDITIONER: document.querySelector('#filter-conditioner')
+    FEATURE_LIST: document.querySelectorAll('.map__features input'),
+  };
+
+  var priceLevel = {
+    LOW: 10000,
+    HIGH: 50000
   };
 
   window.util.autoCompleteAddress(MainPin.ELEMENT, MainPin.WIDTH, MainPin.HEIGHT);
   window.util.disableFilterList(true);
+
+  function doHousingFilter(noticeList) {
+    if (MapFilter.HOUSING_ROOMS.value !== 'any') {
+      noticeList = noticeList.filter(function (notice) {
+        return notice.offer.rooms.toString() === MapFilter.HOUSING_ROOMS.value;
+      });
+    }
+
+    if (MapFilter.HOUSING_TYPE.value !== 'any') {
+      noticeList = noticeList.filter(function (notice) {
+        return notice.offer.type === MapFilter.HOUSING_TYPE.value;
+      });
+    }
+
+    if (MapFilter.HOUSING_GUESTS.value !== 'any') {
+      noticeList = noticeList.filter(function (notice) {
+        return notice.offer.guests.toString() === MapFilter.HOUSING_GUESTS.value;
+      });
+    }
+
+    if (MapFilter.HOUSING_PRICE.value === 'low') {
+      noticeList = noticeList.filter(function (notice) {
+        return notice.offer.price < priceLevel.LOW;
+      });
+    } else if (MapFilter.HOUSING_PRICE.value === 'middle') {
+      noticeList = noticeList.filter(function (notice) {
+        return notice.offer.price >= priceLevel.LOW && notice.offer.price < priceLevel.HIGH;
+      });
+    } else if (MapFilter.HOUSING_PRICE.value === 'high') {
+      noticeList = noticeList.filter(function (notice) {
+        return notice.offer.price >= priceLevel.HIGH;
+      });
+    }
+
+    return noticeList;
+  }
+
+  function doFeatureFilter(notice, feature) {
+    var bool = false;
+    for (var i = 0; i < notice.offer.features.length; i++) {
+      bool = (notice.offer.features[i] === feature);
+      if (bool) {
+        break;
+      }
+    }
+    return bool;
+  }
+
+  function checkFeatureFilter(noticeList, feature, featureId) {
+    if (feature.checked) {
+
+      noticeList = noticeList.filter(function (notice) {
+        return doFeatureFilter(notice, featureId);
+      });
+    }
+    return noticeList;
+  }
 
   var noticeList = [];
 
   function onLoad(data) {
     noticeList = data;
 
-    window.map.renderElements(noticeList);
+    var elementList = window.map.renderElements(noticeList);
 
     function updateMap() {
       window.util.clearMap();
-      var updateNoticeList = noticeList;
+      var updateNoticeList;
 
-      if (MapFilter.HOUSING_ROOMS.value !== 'any') {
-        updateNoticeList = updateNoticeList.filter(function (notice) {
-          return notice.offer.rooms.toString() === MapFilter.HOUSING_ROOMS.value;
-        });
-      }
+      updateNoticeList = doHousingFilter(noticeList);
 
-      if (MapFilter.HOUSING_TYPE.value !== 'any') {
-        updateNoticeList = updateNoticeList.filter(function (notice) {
-          return notice.offer.type === MapFilter.HOUSING_TYPE.value;
-        });
-      }
-
-      if (MapFilter.HOUSING_GUESTS.value !== 'any') {
-        updateNoticeList = updateNoticeList.filter(function (notice) {
-          return notice.offer.guests.toString() === MapFilter.HOUSING_GUESTS.value;
-        });
-      }
-
-      if (MapFilter.HOUSING_PRICE.value === 'low') {
-        updateNoticeList = updateNoticeList.filter(function (notice) {
-          return notice.offer.price < 10000;
-        });
-      } else if (MapFilter.HOUSING_PRICE.value === 'middle') {
-        updateNoticeList = updateNoticeList.filter(function (notice) {
-          return notice.offer.price >= 10000 && notice.offer.price < 50000;
-        });
-      } else if (MapFilter.HOUSING_PRICE.value === 'high') {
-        updateNoticeList = updateNoticeList.filter(function (notice) {
-          return notice.offer.price >= 50000;
-        });
-      }
-
-      function doFeatureFilter(notice, feature) {
-        var bool = false;
-        for (var i = 0; i < notice.offer.features.length; i++) {
-          bool = (notice.offer.features[i] === feature);
-          if (bool) {
-            break;
-          }
-        }
-        return bool;
-      }
-
-      if (MapFilter.FEATURE_WIFI.checked) {
-        updateNoticeList = updateNoticeList.filter(function (notice) {
-          return doFeatureFilter(notice, 'wifi');
-        });
-      }
-
-      if (MapFilter.FEATURE_DISHWASHER.checked) {
-        updateNoticeList = updateNoticeList.filter(function (notice) {
-          return doFeatureFilter(notice, 'dishwasher');
-        });
-      }
-
-      if (MapFilter.FEATURE_PARKING.checked) {
-        updateNoticeList = updateNoticeList.filter(function (notice) {
-          return doFeatureFilter(notice, 'parking');
-        });
-      }
-
-      if (MapFilter.FEATURE_WASHER.checked) {
-        updateNoticeList = updateNoticeList.filter(function (notice) {
-          return doFeatureFilter(notice, 'washer');
-        });
-      }
-
-      if (MapFilter.FEATURE_ELEVATOR.checked) {
-        updateNoticeList = updateNoticeList.filter(function (notice) {
-          return doFeatureFilter(notice, 'elevator');
-        });
-      }
-
-      if (MapFilter.FEATURE_CONDITIONER.checked) {
-        updateNoticeList = updateNoticeList.filter(function (notice) {
-          return doFeatureFilter(notice, 'conditioner');
-        });
-      }
+      MapFilter.FEATURE_LIST.forEach(function (item) {
+        updateNoticeList = checkFeatureFilter(updateNoticeList, item, item.value);
+      });
 
       if (updateNoticeList) {
-        window.map.renderElements(updateNoticeList);
+        elementList = window.map.renderElements(updateNoticeList);
       }
 
-      makeListenerListForPinList();
+      makeListenerListForPinList(elementList.pinList, elementList.cardList);
     }
 
-    for (var i = 0; i < document.querySelectorAll('.map__feature').length; i++) {
-      document.querySelectorAll('.map__feature')[i].onclick = window.util.debounce(function () {
+    MapFilter.FEATURE_LIST.forEach(function (item) {
+      item.addEventListener('click', window.util.debounce(function () {
         updateMap(noticeList);
-      });
-    }
-    for (i = 0; i < document.querySelectorAll('.map__filter').length; i++) {
-      document.querySelectorAll('.map__filter')[i].onchange = window.util.debounce(function () {
+      }));
+    });
+    MapFilter.HOUSING_LIST.forEach(function (item) {
+      item.addEventListener('change', window.util.debounce(function () {
         updateMap(noticeList);
-      });
-    }
+      }));
+    });
 
     function onPinClick(pin, card, closeCardButton) {
       pin.addEventListener('click', function () {
@@ -175,17 +162,15 @@
       }
     }
 
-    function makeListenerListForPinList() {
-      var pinListAfterRender = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-      var cardListAfterRender = document.querySelectorAll('.map__card');
+    function makeListenerListForPinList(pinListAfterRender, cardListAfterRender) {
       var closeCardButtonList = document.querySelectorAll('.popup__close');
 
-      for (i = 0; i < pinListAfterRender.length; i++) {
+      pinListAfterRender.forEach(function (item, i) {
         onPinClick(pinListAfterRender[i], cardListAfterRender[i], closeCardButtonList[i]);
-      }
+      });
     }
 
-    makeListenerListForPinList();
+    makeListenerListForPinList(elementList.pinList, elementList.cardList);
   }
 
   function onMainPinClick() {
@@ -254,26 +239,33 @@
       window.util.disableFilterList(true);
       window.util.MAP.classList.add('map--faded');
       window.util.FORM.classList.add('ad-form--disabled');
-      MainPin.ELEMENT.style.top = 375 + 'px';
-      MainPin.ELEMENT.style.left = 570 + 'px';
+      MainPin.ELEMENT.style.top = MainPin.START_Y + 'px';
+      MainPin.ELEMENT.style.left = MainPin.START_X + 'px';
       window.util.FORM.reset();
       window.util.autoCompleteAddress(MainPin.ELEMENT, MainPin.WIDTH, MainPin.HEIGHT);
       window.util.clearMap();
     },
     renderElements: function (notice) {
-      var cardList = window.cardMaker(notice);
+      var elementList = {
+        pinList: [],
+        cardList: []
+      };
       var pinList = window.pinMaker(notice);
+      var cardList = window.cardMaker(notice);
       var fragment = document.createDocumentFragment();
 
       for (var i = 0; i < notice.length; i++) {
         if (i === window.util.NUMBER_OF_NOTICES) {
           break;
         }
-        fragment.appendChild(cardList[i]);
+        elementList.pinList.push(pinList[i]);
         fragment.appendChild(pinList[i]);
+        elementList.cardList.push(cardList[i]);
+        fragment.appendChild(cardList[i]);
       }
 
       window.util.MAP.insertBefore(fragment, window.util.FILTERS_CONTAINER);
+      return elementList;
     }
   };
 })();

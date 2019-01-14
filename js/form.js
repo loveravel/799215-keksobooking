@@ -1,6 +1,13 @@
 'use strict';
 
 (function () {
+  var minPrice = {
+    BUNGALO: 0,
+    FLAT: 1000,
+    HOUSE: 5000,
+    PALACE: 10000
+  };
+
   var form = document.querySelector('.ad-form');
 
   var avatarChooser = document.querySelector('.ad-form-header__input');
@@ -16,20 +23,18 @@
       f = files[i];
       if (f.type.match('image.*')) {
         var reader = new FileReader();
-        reader.onload = (function () {
-          return function (e) {
-            var img = document.createElement('img');
-            img.style = 'height: 70px; border-radius: 5px; margin-right: 5px; margin-bottom: 5px;';
-            img.src = e.target.result;
-            if (container) {
-              container.insertBefore(img, preview);
-              preview.style = 'display: none;';
-            } else {
-              img.style = 'width: 70px; height: 70px; border-radius: 5px;';
-              preview.appendChild(img);
-            }
-          };
-        })(f);
+        reader.addEventListener('load', function (e) {
+          var img = document.createElement('img');
+          img.style = 'height: 70px; border-radius: 5px; margin-right: 5px; margin-bottom: 5px;';
+          img.src = e.target.result;
+          if (container) {
+            container.insertBefore(img, preview);
+            preview.style = 'display: none;';
+          } else {
+            img.style = 'width: 70px; height: 70px; border-radius: 5px;';
+            preview.appendChild(img);
+          }
+        });
         reader.readAsDataURL(f);
       }
     }
@@ -74,13 +79,13 @@
       'Минимальная цена для типа жилья "Дом" 5000 рублей',
       'Минимальная цена для типа жилья "Дворец" 10000 рублей'
     ];
-    if (typeOfHousing.value === 'bungalo' && price.value < 0) {
+    if (typeOfHousing.value === 'bungalo' && price.value < minPrice.BUNGALO) {
       price.setCustomValidity(texts[0]);
-    } else if (typeOfHousing.value === 'flat' && price.value < 1000) {
+    } else if (typeOfHousing.value === 'flat' && price.value < minPrice.FLAT) {
       price.setCustomValidity(texts[1]);
-    } else if (typeOfHousing.value === 'house' && price.value < 5000) {
+    } else if (typeOfHousing.value === 'house' && price.value < minPrice.HOUSE) {
       price.setCustomValidity(texts[2]);
-    } else if (typeOfHousing.value === 'palace' && price.value < 10000) {
+    } else if (typeOfHousing.value === 'palace' && price.value < minPrice.PALACE) {
       price.setCustomValidity(texts[3]);
     } else {
       price.setCustomValidity('');
@@ -98,13 +103,13 @@
   typeOfHousing.addEventListener('change', function () {
     validateTypeAndPrice();
     if (typeOfHousing.value === 'bungalo') {
-      price.placeholder = '0';
+      price.placeholder = minPrice.BUNGALO.toString();
     } else if (typeOfHousing.value === 'flat') {
-      price.placeholder = '1000';
+      price.placeholder = minPrice.FLAT.toString();
     } else if (typeOfHousing.value === 'house') {
-      price.placeholder = '5000';
+      price.placeholder = minPrice.HOUSE.toString();
     } else if (typeOfHousing.value === 'palace') {
-      price.placeholder = '10000';
+      price.placeholder = minPrice.PALACE.toString();
     } else {
       price.setCustomValidity('');
     }
@@ -163,4 +168,5 @@
     resetEvt.preventDefault();
     window.map.reset();
   });
+
 })();
